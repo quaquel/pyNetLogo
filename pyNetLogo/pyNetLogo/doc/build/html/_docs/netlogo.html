@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>netlogo &mdash; pyNetLogo</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyNetLogo" href="../index.html" />
+    <link rel="prev" title="Welcome to pyNetLogo’s documentation!" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to pyNetLogo’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyNetLogo</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to pyNetLogo&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/_docs/netlogo.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-netlogo">
+<span id="netlogo"></span><h1><a class="reference internal" href="#module-netlogo" title="netlogo"><tt class="xref py py-mod docutils literal"><span class="pre">netlogo</span></tt></a><a class="headerlink" href="#module-netlogo" title="Permalink to this headline">¶</a></h1>
+<p>Created on 21 mrt. 2013</p>
+<dl class="exception">
+<dt id="netlogo.NetLogoException">
+<em class="property">exception </em><tt class="descclassname">netlogo.</tt><tt class="descname">NetLogoException</tt><a class="headerlink" href="#netlogo.NetLogoException" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper around the netlogo java exceptions. As message it contains
+the message of the java exception</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="netlogo.NetLogo">
+<em class="property">class </em><tt class="descclassname">netlogo.</tt><tt class="descname">NetLogo</tt><big>(</big><em>gui=False</em>, <em>thd=False</em><big>)</big><a class="headerlink" href="#netlogo.NetLogo" title="Permalink to this definition">¶</a></dt>
+<dd><p>interface to netlogo</p>
+<dl class="method">
+<dt id="netlogo.NetLogo.command">
+<tt class="descname">command</tt><big>(</big><em>netlogo_command</em><big>)</big><a class="headerlink" href="#netlogo.NetLogo.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the supplied command in netlogo</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>netlogo_command</strong> &#8211; a string with a valid netlogo command</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">NetLogoException in case of either a LogoException or 
+CompilerException being raised by netlogo.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="netlogo.NetLogo.kill_workspace">
+<tt class="descname">kill_workspace</tt><big>(</big><big>)</big><a class="headerlink" href="#netlogo.NetLogo.kill_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>close netlogo. Note that the jvm keeps running. At the moment
+you will need to restart your python session if you would like
+to create a new link to netlogo.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="netlogo.NetLogo.load_model">
+<tt class="descname">load_model</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#netlogo.NetLogo.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>load a netlogo model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; the absolute path to the netlogo model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise :</th><td class="field-body">IOError in case the  model is not found</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body">NetLogoException</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="netlogo.NetLogo.report">
+<tt class="descname">report</tt><big>(</big><em>netlogo_reporter</em><big>)</big><a class="headerlink" href="#netlogo.NetLogo.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Every reporter (commands which return a value) that can be called in 
+the NetLogo Command Center can be called with this method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>netlogo_reporter</strong> &#8211; a valid netlogo reporter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">NetlogoException</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to pyNetLogo’s documentation!"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyNetLogo</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, J.H. Kwakkel.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

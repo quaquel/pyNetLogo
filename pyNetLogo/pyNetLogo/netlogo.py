@@ -6,19 +6,28 @@ Created on 21 mrt. 2013
 '''
 import jpype
 import os
-import sys
-import platform
 
 __all__ = ['NetLogoException',
-           'NetLogoLink']
+           'NetLogo',
+           'NETLOGO_HOME',
+           'PYNETLOGO_HOME']
 
 NETLOGO_HOME = r'C:/Program Files (x86)/NetLogo 5.0.3'
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
 class NetLogoException(Exception):
+    '''
+    
+    wrapper around the netlogo java exceptions. As message it contains
+    the message of the java exception
+    
+    '''
+    
     pass
 
 class NetLogo():
+    ''' interface to netlogo'''
+    
     
     def __init__(self, gui=False, thd=False):
         '''
@@ -79,7 +88,7 @@ class NetLogo():
         
         :param path: the absolute path to the netlogo model
         :raise: IOError in case the  model is not found
-        :raise: NetLogoException wrapped arround netlogo exceptions. 
+        :raise: NetLogoException 
         
         '''
         try:
@@ -98,7 +107,9 @@ class NetLogo():
     def kill_workspace(self):
         '''
         
-        close netlogo and shut down the jvm
+        close netlogo. Note that the jvm keeps running. At the moment
+        you will need to restart your python session if you would like
+        to create a new link to netlogo.
         
         '''
         
