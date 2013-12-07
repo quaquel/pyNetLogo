@@ -6,8 +6,6 @@ package netlogoLink;
  * altered, or otherwise used by anyone for any legal purpose.
  */
 
-
-
 import org.nlogo.headless.HeadlessWorkspace;
 import org.nlogo.api.CompilerException;
 import org.nlogo.api.LogoException;

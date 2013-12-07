@@ -6,13 +6,14 @@ Created on 21 mrt. 2013
 '''
 import jpype
 import os
+import platform
 
 __all__ = ['NetLogoException',
            'NetLogo',
            'NETLOGO_HOME',
            'PYNETLOGO_HOME']
 
-NETLOGO_HOME = r'C:/Program Files (x86)/NetLogo 5.0.3'
+NETLOGO_HOME = r'/Applications/NetLogo 5.0.4'
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
 class NetLogoException(Exception):
@@ -63,12 +64,22 @@ class NetLogo():
                     PYNETLOGO_HOME + r'/java/netlogoLink.jar']
             
             # format jars in right format for starting java virtual machine
-            jars = ";".join(jars)
-            jarpath = '-Djava.class.path={}'.format(jars)
-            jvm_dll = NETLOGO_HOME + r'/jre/bin/client/jvm.dll'            
-            jpype.startJVM(jvm_dll, jarpath, "-Xmx1024m")
+            if platform.system() == 'Darwin':
+                jarpath = ":".join(jars) # it appears mac uses : while windows uses ;
+                jarpath = '-Djava.class.path={}'.format(jarpath)
+                jvm_handle = jpype.getDefaultJVMPath()
+            elif platform.system()=='Windows':
+                jarpath = ";".join(jars) # it appears mac uses : while windows uses ;
+                jarpath = '-Djava.class.path={}'.format(jarpath)
+                jvm_handle = NETLOGO_HOME + r'/jre/bin/client/jvm.dll'            
+            else:
+                raise NetLogoException("unknown operating system, don't know how to format classpath")
+            print jarpath
+            
+            jpype.startJVM(jvm_handle, jarpath, "-Xmx1024m")
 
-        a = jpype.java.lang.System.getProperty("java.library.path")
+            a = jpype.java.lang.System.getProperty("java.library.path")
+            print a
         
         # for some reason, netlogo 3d has hardcoded refs to the 
         # jogl.dll etc. So, we change the current working directory of the
