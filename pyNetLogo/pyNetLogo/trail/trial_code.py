@@ -30,8 +30,17 @@ jarpath = ":".join(jars)
 jarpath = '-Djava.class.path={}'.format(jarpath)
 jvm_handle = jpype.getDefaultJVMPath()
 
+print jvm_handle
+
 jpype.startJVM(jvm_handle, jarpath, "-Xmx1024m")
 jpype.java.lang.System.setProperty('user.dir', NETLOGO_HOME)
+jpype.java.lang.System.setProperty("java.awt.headless", "true");
+
+print jpype.java.lang.System.getProperty("java.runtime.version")
      
 link = jpype.JClass('netlogoLink.NetLogoLink')
-link = link(True, False)
+link = link(False, False)
+
+print "netlogo link instanciated"
+
+link.loadModel(r'/Domain/tudelft.net/Users/jhkwakkel/EMAworkbench/models/predatorPreyNetlogo/Wolf Sheep Predation.nlogo')
