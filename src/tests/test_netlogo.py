@@ -13,8 +13,6 @@ except ImportError:
     import mock
 import pyNetLogo.pyNetLogo as pyNetLogo
  
- 
- 
 class Test(unittest.TestCase):
  
     @mock.patch('pyNetLogo.pyNetLogo.os')
