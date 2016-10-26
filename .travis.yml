@@ -5,8 +5,7 @@ sudo: false
 python:
 - 2.7
 - 3.5
-env:
-- DEPS=“mock"
+
 
 install:
 - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -17,7 +16,7 @@ install:
 - conda install -c conda conda-env
 - conda update -q conda --no-deps
 - conda info -a # Useful for debugging any issues with conda
-- conda install --yes $DEPS # Replace dep1 dep2 ... with your dependencies
+- conda install mock # Replace dep1 dep2 ... with your dependencies
 - pip install coveralls
 - pip install jpype
 
