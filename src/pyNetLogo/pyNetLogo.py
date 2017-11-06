@@ -33,21 +33,13 @@ DEFAULT_LEVEL = DEBUG
 INFO = INFO
 
 def find_netlogo(path):
-    '''find the most recent version of netlogo in the specified directory
+    """find the most recent version of netlogo in the specified directory
     
-    Parameters
-    ----------
-    path : str
+    :param path: str - Path to the root programs directory
+    :returns: str - Path to the NetLogo installation directory
+    :raises: IndexError if no netlogo version is found in path
     
-    Returns
-    -------
-    str
-    
-    Raises
-    ------
-    IndexError if no netlogo version is found in path
-    
-    '''
+    """
     
     path = os.path.abspath(path)
     netlogo_versions = [entry for entry in os.listdir(path) if 'netlogo' in 
@@ -61,8 +53,7 @@ def find_netlogo(path):
 
 
 def find_jars(path):
-    '''find all jars in directory and return as list
-    '''
+    """find all jars in directory and return as list"""
     
     jars = []
     for root, _, files in os.walk(path):
@@ -139,30 +130,17 @@ def get_netlogo_home():
     
 
 class NetLogoException(Exception):
-    """Basic project specific exception """
+    """Basic project exception """
     
     pass
 
     
 class NetLogoLink():
-    
+    """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype."""
+
     def __init__(self, gui=False, thd=False, netlogo_home=None, 
                  netlogo_version=None, jvm_home=None):
-        '''
-        
-        Create a link with NetLogo. Underneath, the NetLogo JVM is started
-        through Jpype.
-        
-        
-        :param gui: boolean, if true run NetLogo with gui, otherwise run in 
-                    headless mode. Defaults to false.
-        :param thd: boolean, if true start NetLogo in 3d mode. Defaults to 
-                    false
-        :param nl_dir: string - full path to NetLogo .exe directory, use if
-                    NetLogo is not in the default location
-        :param nl_version: string - NetLogo version under nl_dir (5.2 or 6.0)
-        
-        '''
+
         if not netlogo_home:
             netlogo_home = get_netlogo_home()
         if not netlogo_version:
@@ -205,8 +183,8 @@ class NetLogoLink():
         Load a NetLogo model.
         
         :param path: the absolute path to the NetLogo model
-        :raise: IOError in case the  model is not found
-        :raise: NetLogoException wrapped around NetLogo exceptions. 
+        :raises: IOError in case the  model is not found
+        :raises: NetLogoException wrapped around NetLogo exceptions. 
         
         '''
         try:
@@ -443,7 +421,7 @@ class NetLogoLink():
         Convert the results to the proper python data type. The NLResults
         object knows its datatype and has converter methods for each.
         
-        :param results; the results from report
+        :param results: the results from report
         :returns: a correct python version of the results
         
         '''
