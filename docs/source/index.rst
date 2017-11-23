@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   ../../_docs/pyNetLogo.rst
+   ./_docs/pyNetLogo.rst
 
 
 
