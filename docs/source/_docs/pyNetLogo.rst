@@ -2,5 +2,5 @@
 :mod:`pyNetLogo`
 ****************
 
-.. automodule:: pyNetLogo
+.. automodule:: pyNetLogo.pyNetLogo
    :members:
