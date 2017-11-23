@@ -135,8 +135,21 @@ class NetLogoException(Exception):
     pass
 
     
-class NetLogoLink():
-    """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype."""
+class NetLogoLink(object):
+    """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype.
+
+    Parameters
+    ----------
+    gui : bool, optional
+    thd : bool, optional
+    netlogo_home : str, optional
+    netlogo_version : str, optional
+    jvm_home : str, optional
+
+    if netlogo_home, netlogo_version, or jvm_home are not provided, the link will
+    try to find it itself. 
+
+    """
 
     def __init__(self, gui=False, thd=False, netlogo_home=None, 
                  netlogo_version=None, jvm_home=None):
