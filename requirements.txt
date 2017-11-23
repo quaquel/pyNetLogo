@@ -1,0 +1,6 @@
+future
+futures
+numpy
+scipy
+pandas
+JPype1
