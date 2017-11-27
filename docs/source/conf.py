@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyNetLogo'
-copyright = u'2013, J.H. Kwakkel'
+copyright = u'2017, J.H. Kwakkel and M. Jaxa-Rozen'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
