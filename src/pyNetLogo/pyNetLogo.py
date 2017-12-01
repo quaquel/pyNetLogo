@@ -469,7 +469,7 @@ class NetLogoLink(object):
         agent_name : str
             Name of the NetLogo agent type to update (singular, e.g. a-sheep)
         
-        Raise
+        Raises
         ------
         NetLogoException
             If a LogoException or CompilerException is raised by NetLogo 
