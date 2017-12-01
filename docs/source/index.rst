@@ -24,6 +24,7 @@ Contents:
    
    install.rst
    pyNetLogo demo.ipynb
+   pyNetLogo demo - SALib parallel
    ./_docs/pyNetLogo.rst
 
 
