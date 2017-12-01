@@ -23,6 +23,8 @@ Contents:
    :maxdepth: 2
    
    install.rst
+   pyNetLogo demo.ipynb
+   pyNetLogo demo - SALib parallel
    ./_docs/pyNetLogo.rst
 
 
