@@ -24,6 +24,7 @@ Contents:
    
    install.rst
    demo.rst
+   pyNetLogo demo.ipynb
    ./_docs/pyNetLogo.rst
 
 
