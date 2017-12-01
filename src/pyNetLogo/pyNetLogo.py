@@ -1,7 +1,7 @@
-'''
+"""
 To do: check Mac support and handling of custom directories
 
-'''
+"""
 
 from __future__ import unicode_literals, absolute_import
 import os
@@ -33,11 +33,23 @@ DEFAULT_LEVEL = DEBUG
 INFO = INFO
 
 def find_netlogo(path):
-    """find the most recent version of netlogo in the specified directory
+    """Find the most recent version of NetLogo in the specified directory
     
-    :param path: str - Path to the root programs directory
-    :returns: str - Path to the NetLogo installation directory
-    :raises: IndexError if no netlogo version is found in path
+    Parameters
+    ----------
+    path : str
+        Path to the root programs directory
+
+    Returns
+    -------    
+    str
+        Path to the most recent NetLogo installation directory (assuming
+        default NetLogo directory names)
+
+    Raises
+    ------
+    IndexError
+        If no NetLogo version is found in path
     
     """
     
@@ -53,7 +65,19 @@ def find_netlogo(path):
 
 
 def find_jars(path):
-    """find all jars in directory and return as list"""
+    """Find all jar files in directory and return as list
+    
+    Parameters
+    ----------
+    path : str
+        Path in which to find jar files
+    
+    Returns
+    -------    
+    str
+        List of jar files
+
+    """
     
     jars = []
     for root, _, files in os.walk(path):
@@ -130,24 +154,31 @@ def get_netlogo_home():
     
 
 class NetLogoException(Exception):
-    """Basic project exception """
+    """Basic project exception
+
+    """
     
     pass
 
     
 class NetLogoLink(object):
     """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype.
+    
+    If netlogo_home, netlogo_version, or jvm_home are not provided, the link
+    will try to identify the correct parameters automatically.
 
     Parameters
     ----------
     gui : bool, optional
+        If true, displays the NetLogo GUI (not supported on Mac)
     thd : bool, optional
+        If true, use NetLogo 3D
     netlogo_home : str, optional
-    netlogo_version : str, optional
+        Path to the NetLogo installation directory
+    netlogo_version : {'6','5'}, optional
+        Used to choose appropriate command syntax for the link methods
     jvm_home : str, optional
-
-    if netlogo_home, netlogo_version, or jvm_home are not provided, the link will
-    try to find it itself. 
+        Java home directory for Jpype
 
     """
 
@@ -191,15 +222,22 @@ class NetLogoLink(object):
         
             
     def load_model(self, path):
-        '''
+        """Load a NetLogo model.
         
-        Load a NetLogo model.
+        Parameters
+        ----------
+        path : str
+            Path to the NetLogo model
+
+        Raises
+        ------
+        IOError
+            In case the model is not found
+        NetLogoException
+            In case of a NetLogo exception
         
-        :param path: the absolute path to the NetLogo model
-        :raises: IOError in case the  model is not found
-        :raises: NetLogoException wrapped around NetLogo exceptions. 
-        
-        '''
+        """
+
         try:
             self.link.loadModel(path)
         except jpype.JavaException as ex :
@@ -207,25 +245,27 @@ class NetLogoLink(object):
 
 
     def kill_workspace(self):
-        '''
+        """Close NetLogo and shut down the JVM.
         
-        Close NetLogo and shut down the JVM.
-        
-        '''
+        """
         
         self.link.killWorkspace()
         
         
     def command(self, netlogo_command):
-        '''
+        """Execute the supplied command in NetLogo
         
-        Execute the supplied command in NetLogo
+        Parameters
+        ----------
+        netlogo_command : str
+            Valid NetLogo command
+
+        Raises
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo
         
-        :param netlogo_command: a string with a valid netlogo command
-        :raises: NetLogoException in case of either a LogoException or 
-                CompilerException being raised by netlogo.
-        
-        '''
+        """
         
         try:
             self.link.command(netlogo_command)
@@ -234,15 +274,22 @@ class NetLogoLink(object):
 
             
     def report(self, netlogo_reporter):
-        '''
+        """Return values from a NetLogo reporter
+
+        Any reporter (command which returns a value) that can be called
+        in the NetLogo Command Center can be called with this method.
         
-        Every reporter (commands which return a value) that can be called in 
-        the NetLogo Command Center can be called with this method.
-        
-        :param netlogo_reporter: a valid netlogo reporter 
-        :raises: NetlogoException
-        
-        '''
+        Parameters
+        ----------
+        netlogo_reporter : str
+            Valid NetLogo reporter 
+
+        Raises
+        ------
+        NetlogoException
+            If a LogoException or CompilerException is raised by NetLogo   
+
+        """
         
         try:
             result = self.link.report(netlogo_reporter)
@@ -251,18 +298,29 @@ class NetLogoLink(object):
             raise NetLogoException(ex.message())
         
         
-    def patch_report(self, netlogo_reporter):
-        '''
+    def patch_report(self, attribute):
+        """Return patch attributes from NetLogo
+
+        Returns a pandas DataFrame with same dimensions as the NetLogo world,
+        with column labels and row indices following pxcor and pycor patch
+        coordinates. Values of the dataframe correspond to patch attributes.
         
-        Reports a Pandas dataframe with the same shape as the NetLogo world, with
-        column labels and row indices following pxcor and pycor patch coordinates.
-        The values of the dataframe correspond to patch attributes.
+        Parameters
+        ----------
+        attribute : str
+            Valid NetLogo patch attribute 
         
-        :param netlogo_reporter: valid patch attribute 
-        :raises: NetlogoException
-        :returns: Dataframe containing NetLogo patch attributes
+        Returns
+        -------
+        pandas DataFrame
+            DataFrame containing patch attributes
         
-        '''
+        Raises
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo        
+
+        """
 
         try:
             extents = self.link.report('(list min-pxcor max-pxcor min-pycor max-pycor)')
@@ -272,9 +330,9 @@ class NetLogoLink(object):
                                       columns=range(extents[0],extents[1]+1,1))
             results_df.sort_index(ascending=False, inplace=True)
             if self.netlogo_version == '6':
-                resultsvec = self.link.report('map [[?1] -> [{0}] of ?1] sort patches'.format(netlogo_reporter))
+                resultsvec = self.link.report('map [[?1] -> [{0}] of ?1] sort patches'.format(attribute))
             else:
-                resultsvec = self.link.report('map [[{0}] of ?] sort patches'.format(netlogo_reporter))
+                resultsvec = self.link.report('map [[{0}] of ?] sort patches'.format(attribute))
             resultsvec = self._cast_results(resultsvec)
             results_df.ix[:,:] = resultsvec.reshape(results_df.shape)
             
@@ -285,16 +343,24 @@ class NetLogoLink(object):
             
     
     def patch_set(self, attribute, data):
-        '''
+        """Set patch attributes in NetLogo
+
+        Inverse of the `patch_report` method. Sets a patch attribute using values
+        from a pandas DataFrame with the same dimensions as the NetLogo world.
         
-        Set patch attributes from a Pandas dataframe
+        Parameters
+        ----------
+        attribute : str
+            Valid NetLogo patch attribute
+        data : Pandas DataFrame
+            DataFrame with same dimensions as NetLogo world
+
+        Raises
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo        
         
-        :param attribute: valid NetLogo patch attribute
-        :param data: Pandas dataframe with same dimensions as NetLogo world, containing
-                     values to be set
-        :raises: NetLogoException
-        
-        '''
+        """
     
         try:
             np.set_printoptions(threshold = np.prod(data.shape))
@@ -314,15 +380,21 @@ class NetLogoLink(object):
         
         
     def repeat_command(self, netlogo_command, reps):
-        '''
+        """Execute the supplied command in NetLogo a given number of times
         
-        Execute the supplied command in NetLogo a given number of times
+        Parameters
+        ----------
+        netlogo_command : str
+            Valid NetLogo command
+        reps : int
+            Number of repetitions for which to repeat commands
         
-        :param netlogo_command: string with a valid NetLogo command
-        :param reps: int, number of times to repeat commands
-        :raises: NetLogoException
+        Raises
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo 
         
-        '''
+        """
     
         try:
             commandstr = 'repeat {0} [{1}]'.format(reps, netlogo_command)
@@ -332,18 +404,31 @@ class NetLogoLink(object):
         
 
     def repeat_report(self, netlogo_reporter, reps):
-        '''
+        """Return values from a NetLogo reporter over a number of ticks.
+
+        Assumes the model can be run using the default `go` command.
+        Can be used with multiple reporters by passing a list of strings.
         
-        Execute a reporter (or multiple reporters if a list of strings is given as input)
-        over a number of ticks.
+        Parameters
+        ----------
+        netlogo_reporter : str or list of str
+            Valid NetLogo reporter(s)
+        reps : int
+            Number of NetLogo ticks for which to return values
+
+        Returns
+        -------
+        pandas DataFrame
+            DataFrame of reported values indexed by ticks, with columns
+            for each reporter
+
+        Raises
+        ------
+        NetLogoException
+            If reporters are not in a valid format, or if a LogoException
+            or CompilerException is raised by NetLogo 
         
-        :param netlogo_reporter: valid NetLogo reporters (string or list of strings)
-        :param reps: int, number of ticks for which to return values
-        :raises: NetLogoException
-        :returns: Dataframe of reported values indexed by ticks, with columns 
-         for each reporter.
-        
-        '''
+        """
         
         if isinstance(netlogo_reporter, str):
             cols = [netlogo_reporter]
@@ -369,18 +454,27 @@ class NetLogoLink(object):
         return results_df
 
 
-    def write_NetLogo_attriblist(netlogo, agent_data, agent_name):
-        '''
-        Update a set of NetLogo agents of the same type with attributes from a Pandas dataframe
-        
-        :param netlogo: NetLogoLink object
-        :param agent_data: Pandas dataframe with a row for each agent, and columns for each attribute to update. 
-                           Requires a 'who' column for the NetLogo agent ID
-        :param agent_name: String for the name of the NetLogo agent type to update (singular, e.g. a-sheep
-                           in the wolf-sheep predation example)
-        :raises: NetLogoException
-        '''
+    def write_NetLogo_attriblist(self, agent_data, agent_name):
+        """Update attributes of a set of NetLogo agents from a DataFrame
 
+        Assumes a set of NetLogo agents of the same type. Attribute values
+        can be numerical or strings.
+        
+        Parameters
+        ----------
+        agent_data : pandas DataFrame
+            DataFrame indexed with a row for each agent, and columns for
+            each attribute to update. Requires a 'who' column for the
+            NetLogo agent ID
+        agent_name : str
+            Name of the NetLogo agent type to update (singular, e.g. a-sheep)
+        
+        Raise
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo 
+        
+        """
 
         try:
             #Get list of agent IDs to update, and convert to a Python string to pass to NetLogo
@@ -392,7 +486,7 @@ class NetLogoLink(object):
             #Convert the agent data to Python lists, then to strings to pass to NetLogo
             attribstr = []
             for attrib in attribs_to_update:
-                #Check if we have string or numerical data in the dataframe and format the values accordingly
+                #Check if we have string or numerical data and format values accordingly
                 if (agent_data[attrib].dtype == object):
                     values = ' '.join(map(lambda x: '"{0}"'.format(x), list(agent_data[attrib])))
                 else:
@@ -413,15 +507,15 @@ class NetLogoLink(object):
             askstr = ''.join(askstr)
             setstr = ''.join(setstr)
 
-            if netlogo.netlogo_version == '6':
+            if self.netlogo_version == '6':
                 commandstr = ['(foreach [{0}] {1} [ [?1 {2}] -> ask {3} ?1 [{4}]])'.format(whostr, attribstr, askstr,
                                                                                            agent_name, setstr)]
-            elif netlogo.netlogo_version == '5':
+            elif self.netlogo_version == '5':
                 commandstr = ['(foreach [{0}] {1} [ask {2} ?1 [{3}]])'].format(whostr, attribstr, agent_name, setstr)
                 
             commandstr = ''.join(commandstr)
             
-            netlogo.command(commandstr)
+            self.link.command(commandstr)
             
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
@@ -429,15 +523,18 @@ class NetLogoLink(object):
 
 
     def _cast_results(self, results):
-        '''
-        
-        Convert the results to the proper python data type. The NLResults
+        """Convert results to the proper python data type. The NLResults
         object knows its datatype and has converter methods for each.
         
-        :param results: the results from report
-        :returns: a correct python version of the results
+        Parameters
+        ----------
+        results : bool, str, int, double, boollist, stringlist, integerlist, doublelist
         
-        '''
+        Returns
+        -------
+        Corresponding python version of the results
+        
+        """
         
         java_dtype = results.type
         
