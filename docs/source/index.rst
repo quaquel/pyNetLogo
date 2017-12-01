@@ -23,7 +23,6 @@ Contents:
    :maxdepth: 2
    
    install.rst
-   demo.rst
    pyNetLogo demo.ipynb
    ./_docs/pyNetLogo.rst
 
