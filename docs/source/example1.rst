@@ -9,7 +9,7 @@ included in the NetLogo example library (Wilensky, 1999).
 We start by instantiating a link to NetLogo, loading the model, and
 executing the ``setup`` command in NetLogo.
 
-.. code:: ipython2
+.. code:: ipython3
 
     import numpy as np
     import pandas as pd
@@ -38,7 +38,7 @@ Each row corresponds to an agent, with columns for each attribute
 case, we set coordinates for the agents using the ``xcor`` and ``ycor``
 attributes.
 
-.. code:: ipython2
+.. code:: ipython3
 
     agent_xy = pd.read_excel('xy_DataFrame.xlsx')
     agent_xy[['who','xcor','ycor']].head(5)
@@ -98,7 +98,7 @@ attributes.
 We can then pass the dataframe to NetLogo, specifying which attributes
 and which agent type we want to update:
 
-.. code:: ipython2
+.. code:: ipython3
 
     netlogo.write_NetLogo_attriblist(agent_xy[['who','xcor','ycor']], 'a-sheep')
 
@@ -114,7 +114,7 @@ NetLogo version. The ``netlogo_version`` property of the link object can
 be used to check the current version. By default, the link object will
 use the most recent NetLogo version which was found.
 
-.. code:: ipython2
+.. code:: ipython3
 
     if netlogo.netlogo_version == '6':
         x = netlogo.report('map [s -> [xcor] of s] sort sheep')
@@ -123,7 +123,7 @@ use the most recent NetLogo version which was found.
         x = netlogo.report('map [[xcor] of ?1] sort sheep')
         y = netlogo.report('map [[ycor] of ?1] sort sheep')
 
-.. code:: ipython2
+.. code:: ipython3
 
     fig, ax = plt.subplots(1)
     
@@ -145,7 +145,7 @@ arrays for the sheep agents, and return an additional array for each
 agent’s energy value. The latter is plotted on a histogram for each
 agent type.
 
-.. code:: ipython2
+.. code:: ipython3
 
     #We can use either of the following commands to run for 100 ticks:
     
@@ -163,7 +163,7 @@ agent type.
          
     energy_wolves = netlogo.report('[energy] of wolves') #NetLogo returns these in random order
 
-.. code:: ipython2
+.. code:: ipython3
 
     from mpl_toolkits.axes_grid1 import make_axes_locatable
     
@@ -203,11 +203,11 @@ over 200 ticks; the outcomes are first plotted as a function of time.
 The number of wolf agents is then plotted as a function of the number of
 sheep agents, to approximate a phase-space plot.
 
-.. code:: ipython2
+.. code:: ipython3
 
     counts = netlogo.repeat_report(['count wolves','count sheep'], 200)
 
-.. code:: ipython2
+.. code:: ipython3
 
     fig, ax = plt.subplots(1, 2)
     
@@ -232,7 +232,7 @@ we track the energy of the wolf and sheep agents over 5 ticks, and plot
 the distribution of the wolves’ energy at the final tick recorded in the
 dataframe.
 
-.. code:: ipython2
+.. code:: ipython3
 
     energy_df = netlogo.repeat_report(['[energy] of wolves', '[energy] of sheep'], 5)
     
@@ -256,7 +256,7 @@ patch. This dataframe essentially replicates the NetLogo environment,
 with column labels corresponding to the xcor patch coordinates, and
 indices following the pycor coordinates.
 
-.. code:: ipython2
+.. code:: ipython3
 
     countdown_df = netlogo.patch_report('countdown')
     
@@ -280,12 +280,12 @@ functions, for instance by exporting to an Excel file. The ``patch_set``
 method provides the inverse functionality to ``patch_report``, and
 updates the NetLogo environment from a dataframe.
 
-.. code:: ipython2
+.. code:: ipython3
 
     countdown_df.to_excel('countdown.xlsx')
     netlogo.patch_set('countdown', countdown_df.max()-countdown_df)
 
-.. code:: ipython2
+.. code:: ipython3
 
     countdown_update_df = netlogo.patch_report('countdown')
     
@@ -307,6 +307,6 @@ updates the NetLogo environment from a dataframe.
 Finally, the ``kill_workspace()`` method shuts down the NetLogo
 instance.
 
-.. code:: ipython2
+.. code:: ipython3
 
     netlogo.kill_workspace()

@@ -13,7 +13,7 @@ An interactive Jupyter notebook version, as well as the model files used
 in the example, are available from the pyNetLogo repository at
 https://github.com/quaquel/pyNetLogo.
 
-.. code:: ipython2
+.. code:: ipython3
 
     #Ensuring compliance of code with both python2 and python3
     
@@ -23,7 +23,7 @@ https://github.com/quaquel/pyNetLogo.
     except ImportError: # will be 3.x series
         pass
 
-.. code:: ipython2
+.. code:: ipython3
 
     import numpy as np
     import pandas as pd
@@ -46,7 +46,7 @@ correspond to a NetLogo global variable), and the sampling bounds.
 Documentation for SALib can be found at
 https://salib.readthedocs.io/en/latest/.
 
-.. code:: ipython2
+.. code:: ipython3
 
     problem = { 
       'num_vars': 6,
@@ -72,7 +72,7 @@ parameters, and *n* is a baseline sample size which should be large
 enough to stabilize the estimation of the indices. For this example, we
 use *n* = 1000, for a total of 14000 experiments.
 
-.. code:: ipython2
+.. code:: ipython3
 
     n = 1000
     param_values = saltelli.sample(problem, n, calc_second_order=True)
@@ -80,7 +80,7 @@ use *n* = 1000, for a total of 14000 experiments.
 The sampler generates an input array of shape (*n(2p+2)*, *p*) with rows
 for each experiment and columns for each input parameter.
 
-.. code:: ipython2
+.. code:: ipython3
 
     param_values.shape
 
@@ -116,7 +116,7 @@ Next, we can connect the interactive notebook to the started cluster by
 instantiating a client, and checking that client.ids returns a list of 4
 available engines.
 
-.. code:: ipython2
+.. code:: ipython3
 
     import ipyparallel
     
@@ -146,11 +146,11 @@ Note: there are various solutions to both problems. For example, we
 could make the NetLogo file a keyword argument and pass the absolute
 path to it.
 
-.. code:: ipython2
+.. code:: ipython3
 
     direct_view = client[:]
 
-.. code:: ipython2
+.. code:: ipython3
 
     import os
     
@@ -166,7 +166,7 @@ path to it.
 
 
 
-.. code:: ipython2
+.. code:: ipython3
 
     #Push the "problem" variable from the notebook to a corresponding variable on the engines
     direct_view.push(dict(problem=problem))
@@ -185,7 +185,7 @@ parallel on each of the engines. Here the code first involves some
 imports and a change of the working directory. We then start a link to
 NetLogo, and load the example model on each of the engines.
 
-.. code:: ipython2
+.. code:: ipython3
 
     %%px 
     
@@ -210,7 +210,7 @@ We first set up a simulation function that takes a single experiment
 (i.e. a vector of input parameters) as an argument, and returns the
 outcomes of interest in a pandas Series.
 
-.. code:: ipython2
+.. code:: ipython3
 
     def simulation(experiment):
         
@@ -248,18 +248,18 @@ from the results (which are returned as a list of Series). The
 pandas supports several more advanced storage options, such as
 serialization with msgpack, or hierarchical HDF5 storage.
 
-.. code:: ipython2
+.. code:: ipython3
 
     lview = client.load_balanced_view()
     
     t0 = time.time()
     results = pd.DataFrame(lview.map_sync(simulation, param_values))
 
-.. code:: ipython2
+.. code:: ipython3
 
     results.to_csv('Sobol_parallel.csv')
 
-.. code:: ipython2
+.. code:: ipython3
 
     results.head(5)
 
@@ -315,7 +315,7 @@ Using SALib for sensitivity analysis
 We can then proceed with the analysis, first using a histogram to
 visualize output distributions for each outcome:
 
-.. code:: ipython2
+.. code:: ipython3
 
     fig, ax = plt.subplots(1,len(results.columns), sharey=True)
     
@@ -340,7 +340,7 @@ sheep count as an example, we obtain the following, using the scipy
 library to calculate the Pearson correlation coefficient (r) for each
 parameter, and the seaborn library to plot a linear trend fit.
 
-.. code:: ipython2
+.. code:: ipython3
 
     import scipy
     
@@ -382,7 +382,7 @@ output variance as well as input interactions (again using the mean
 sheep count). By default, 95% confidence intervals are estimated for
 each index.
 
-.. code:: ipython2
+.. code:: ipython3
 
     Si = sobol.analyze(problem, results['Avg. sheep'].values, calc_second_order=True, print_to_console=False)
 
@@ -392,12 +392,12 @@ by SALib to a DataFrame. The default pandas plotting method is then used
 to plot these indices along with their estimated confidence intervals
 (shown as error bars).
 
-.. code:: ipython2
+.. code:: ipython3
 
     Si_filter = {k:Si[k] for k in ['ST','ST_conf','S1','S1_conf']}
     Si_df = pd.DataFrame(Si_filter, index=problem['names'])
 
-.. code:: ipython2
+.. code:: ipython3
 
     Si_df
 
@@ -466,7 +466,7 @@ to plot these indices along with their estimated confidence intervals
 
 
 
-.. code:: ipython2
+.. code:: ipython3
 
     fig, ax = plt.subplots(1)
     
@@ -493,7 +493,7 @@ individual contribution to variance).
 We can use a more sophisticated visualization to include the
 second-order interactions between inputs estimated from the S2 values.
 
-.. code:: ipython2
+.. code:: ipython3
 
     import itertools
     from math import pi
@@ -649,6 +649,6 @@ normalized variable importances.
 
 Finally, the kill_workspace() function shuts down the NetLogo instance.
 
-.. code:: ipython2
+.. code:: ipython3
 
     netlogo.kill_workspace()
