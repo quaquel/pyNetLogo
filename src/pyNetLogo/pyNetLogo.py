@@ -286,7 +286,7 @@ class NetLogoLink(object):
 
         Raises
         ------
-        NetlogoException
+        NetLogoException
             If a LogoException or CompilerException is raised by NetLogo   
 
         """

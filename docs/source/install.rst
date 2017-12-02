@@ -3,8 +3,7 @@ Installation
 
 pyNetLogo requires the numpy, scipy and pandas packages, which are included in most scientific Python distributions. The module has been tested using the Continuum Anaconda 2.7 and 3.6 distributions.
 
-In addition, pyNetLogo depends on `JPype <https://jpype.readthedocs.io/en/latest/>`_. Please
-follow the instructions provided there to install JPype.
+In addition, pyNetLogo depends on `JPype <https://jpype.readthedocs.io/en/latest/>`_. Please follow the instructions provided there to install JPype.
 
 pyNetLogo can currently be installed by placing the pyNetLogo folder (containing the pyNetLogo.py module and java subfolder) in a directory which is in the Python search path. In the foreseeable future, PyNetLogo will become installable from the pip package manager:
 
@@ -18,7 +17,6 @@ Known bugs and limitations
 -	pyNetLogo enables controlling NetLogo from within Python. Calling Python
 	from within NetLogo is not supported by this library. However, this can be achieved
 	using the `Python extension for NetLogo <https://github.com/qiemem/PythonExtension>`_.
--	See `JPype limitations <https://jpype.readthedocs.io/en/latest/install.html#known-bugs-limitations>`_ 
-	for additional limitations 
+-	See `JPype limitations <https://jpype.readthedocs.io/en/latest/install.html#known-bugs-limitations>`_ for additional limitations.
 -	Mixing 32-bit and 64-bit versions of Java, Python, and NetLogo will crash
 	Python. 

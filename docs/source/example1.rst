@@ -2,9 +2,13 @@
 Example 1: NetLogo interaction through the pyNetLogo connector
 --------------------------------------------------------------
 
-This notebook provides a simple example of interaction between a NetLogo
+This provides a simple example of interaction between a NetLogo
 model and the Python environment, using the Wolf Sheep Predation model
-included in the NetLogo example library (Wilensky, 1999).
+included in the NetLogo example library (Wilensky, 1999). 
+
+An interactive Jupyter notebook version, as well as the model files used
+in the example, are available from the pyNetLogo repository at
+https://github.com/quaquel/pyNetLogo.
 
 We start by instantiating a link to NetLogo, loading the model, and
 executing the ``setup`` command in NetLogo.
