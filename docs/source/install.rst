@@ -1,25 +1,24 @@
 Installation
 ============
 
-advice to use anaconda
+pyNetLogo requires the numpy, scipy and pandas packages, which are included in most scientific Python distributions. The module has been tested using the Continuum Anaconda 2.7 and 3.6 distributions.
 
-In the foreseeable future, PyNetLogo will becomes installable from pip
+In addition, pyNetLogo depends on `JPype <https://jpype.readthedocs.io/en/latest/>`_. Please
+follow the instructions provided there to install JPype.
 
-	pip install pynetlogo
+pyNetLogo can currently be installed by placing the pyNetLogo folder (containing the pyNetLogo.py module and java subfolder) in a directory which is in the Python search path. In the foreseeable future, PyNetLogo will become installable from the pip package manager:
 
-pyNetLogo depends on `JPype <https://jpype.readthedocs.io/en/latest/>`_. Please
-follow the instruction provided there to install JPype.
+	``pip install pynetlogo``
 
-explain mac problem with jpype and java_home
-
-something on autodiscovery netlogo and java
+By default, pyNetLogo and Jpype will attempt to automatically identify the NetLogo version and installation directory, as well as the Java home directory. In case of issues (e.g. if NetLogo was installed in a different directory, or if the Java path is not found on a Mac), these parameters can be passed directly to the NetLogoLink class as described in the module documentation.
 
 Known bugs and limitations
 --------------------------
--	on a mac, only headless is supported.
+-	On a Mac, only headless mode (without GUI) is supported.
 -	pyNetLogo enables controlling NetLogo from within Python. Calling Python
-	from within NetLogo is not supported by this library.
--	see `JPype limitations <https://jpype.readthedocs.io/en/latest/install.html#known-bugs-limitations>`_ 
+	from within NetLogo is not supported by this library. However, this can be achieved
+	using the `Python extension for NetLogo <https://github.com/qiemem/PythonExtension>`_.
+-	See `JPype limitations <https://jpype.readthedocs.io/en/latest/install.html#known-bugs-limitations>`_ 
 	for additional limitations 
--	mixing 32 bit and 64 bit versions of java, Python, and NetLogo will crash
+-	Mixing 32-bit and 64-bit versions of Java, Python, and NetLogo will crash
 	Python. 

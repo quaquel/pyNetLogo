@@ -1,8 +1,0 @@
-channels:
-  - conda-forge
-dependencies:
-  - sphinx>=1.4
-  - pandoc
-  - nbconvert
-  - pip:
-    - nbsphinx

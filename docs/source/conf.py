@@ -18,7 +18,7 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-sys.path.append(os.path.abspath('./src/'))
+sys.path.append(os.path.abspath('../../src/'))
 
 
 # -- General configuration -----------------------------------------------------
@@ -28,7 +28,7 @@ sys.path.append(os.path.abspath('./src/'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['nbsphinx', 'sphinx.ext.mathjax',
+extensions = ['sphinx.ext.mathjax',
 			  'sphinx.ext.autodoc', 'sphinx.ext.doctest','sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.

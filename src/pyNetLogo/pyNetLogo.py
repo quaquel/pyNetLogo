@@ -164,7 +164,7 @@ class NetLogoException(Exception):
 class NetLogoLink(object):
     """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype.
     
-    If netlogo_home, netlogo_version, or jvm_home are not provided, the link
+    If `netlogo_home`, `netlogo_version`, or `jvm_home` are not provided, the link
     will try to identify the correct parameters automatically.
 
     Parameters

@@ -22,10 +22,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   ./_docs/pyNetLogo.rst
    install.rst
-   pyNetLogo demo.ipynb
-   pyNetLogo demo - SALib parallel.ipynb
+   example1.rst
+   example2.rst
+   ./_docs/pyNetLogo.rst
 
 
 
