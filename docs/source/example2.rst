@@ -309,6 +309,8 @@ serialization with msgpack, or hierarchical HDF5 storage.
 
 
 
+|
+
 Using SALib for sensitivity analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -331,7 +333,7 @@ visualize output distributions for each outcome:
 
 
 
-.. image:: example2_files/example2_25_0.png
+.. image:: example2_files/example2_26_0.png
 
 
 Bivariate scatter plots can be useful to visualize relationships between
@@ -368,7 +370,7 @@ parameter, and the seaborn library to plot a linear trend fit.
 
 
 
-.. image:: example2_files/example2_27_0.png
+.. image:: example2_files/example2_28_0.png
 
 
 This indicates a positive relationship between the
@@ -480,7 +482,7 @@ to plot these indices along with their estimated confidence intervals
 
 
 
-.. image:: example2_files/example2_33_0.png
+.. image:: example2_files/example2_34_0.png
 
 
 The “sheep-gain-from-food” parameter has the highest ST index,
@@ -639,7 +641,7 @@ second-order interactions between inputs estimated from the S2 values.
 
 
 
-.. image:: example2_files/example2_35_0.png
+.. image:: example2_files/example2_36_0.png
 
 
 In this case, the “sheep-gain-from-food” variable has strong

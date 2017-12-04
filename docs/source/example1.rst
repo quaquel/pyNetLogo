@@ -2,19 +2,16 @@
 Example 1: NetLogo interaction through the pyNetLogo connector
 --------------------------------------------------------------
 
-This provides a simple example of interaction between a NetLogo
+This notebook provides a simple example of interaction between a NetLogo
 model and the Python environment, using the Wolf Sheep Predation model
-included in the NetLogo example library (Wilensky, 1999). 
-
-An interactive Jupyter notebook version, as well as the model files used
-in the example, are available from the pyNetLogo repository at
-https://github.com/quaquel/pyNetLogo.
+included in the NetLogo example library (Wilensky, 1999).
 
 We start by instantiating a link to NetLogo, loading the model, and
 executing the ``setup`` command in NetLogo.
 
 .. code:: python
 
+    %matplotlib inline
     import numpy as np
     import pandas as pd
     import matplotlib.pyplot as plt
@@ -97,7 +94,7 @@ attributes.
     </table>
     </div>
 
-
+|
 
 We can then pass the dataframe to NetLogo, specifying which attributes
 and which agent type we want to update:
@@ -135,7 +132,7 @@ use the most recent NetLogo version which was found.
     ax.set_xlabel('xcor')
     ax.set_ylabel('ycor')
     ax.set_aspect('equal')
-    fig.set_size_inches(4,4)
+    fig.set_size_inches(5,5)
     
     plt.show()
 
@@ -198,8 +195,8 @@ agent type.
 
 The ``repeat_report`` method returns a Pandas dataframe containing
 reported values over a given number of ticks, for one or multiple
-reporters. This assumes the NetLogo model is run using the default
-``go`` convention.
+reporters. By default, this assumes the model is run with the “go”
+NetLogo command; this can be set by passing an optional ``go`` argument.
 
 The dataframe is indexed by ticks, with labeled columns for each
 reporter. In this case, we track the number of wolf and sheep agents
@@ -209,7 +206,7 @@ sheep agents, to approximate a phase-space plot.
 
 .. code:: python
 
-    counts = netlogo.repeat_report(['count wolves','count sheep'], 200)
+    counts = netlogo.repeat_report(['count wolves','count sheep'], 200, go='go')
 
 .. code:: python
 
@@ -221,7 +218,7 @@ sheep agents, to approximate a phase-space plot.
     ax[1].plot(counts['count wolves'], counts['count sheep'])
     ax[1].set_xlabel('Wolves')
     ax[1].set_ylabel('Sheep')
-    fig.set_size_inches(14,5)
+    fig.set_size_inches(12,5)
     
     plt.show()
 
@@ -231,14 +228,24 @@ sheep agents, to approximate a phase-space plot.
 
 
 The ``repeat_report`` method can also be used with reporters that return
-a NetLogo list; this list is converted to a numpy array. In this case,
-we track the energy of the wolf and sheep agents over 5 ticks, and plot
-the distribution of the wolves’ energy at the final tick recorded in the
-dataframe.
+a NetLogo list. In this case, the list is converted to a numpy array. As
+an example, we track the energy of the wolf and sheep agents over 5
+ticks, and plot the distribution of the wolves’ energy at the final tick
+recorded in the dataframe.
+
+To illustrate different data types, we also track the
+``[sheep-str] of sheep`` reporter (which returns a string property
+across the sheep agents, converted to a numpy object array),
+``count sheep`` (returning a single numerical variable), and
+``global-str`` (returning a single string variable).
 
 .. code:: python
 
-    energy_df = netlogo.repeat_report(['[energy] of wolves', '[energy] of sheep'], 5)
+    energy_df = netlogo.repeat_report(['[energy] of wolves',
+                                       '[energy] of sheep',
+                                       '[sheep-str] of sheep',
+                                       'count sheep',
+                                       'global-str'], 5)
     
     fig, ax = plt.subplots(1)
     
@@ -253,6 +260,76 @@ dataframe.
 
 .. image:: example1_files/example1_16_0.png
 
+
+.. code:: python
+
+    energy_df.head()
+
+
+
+
+.. raw:: html
+
+    <div>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>[energy] of wolves</th>
+          <th>[energy] of sheep</th>
+          <th>[sheep-str] of sheep</th>
+          <th>count sheep</th>
+          <th>global-str</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>300.0</th>
+          <td>[6.18872460723, 16.4281144738, 10.3908615112, ...</td>
+          <td>[11.8918457031, 15.3106870651, 18.6075439453, ...</td>
+          <td>[string-property, string-property, string-prop...</td>
+          <td>93</td>
+          <td>global</td>
+        </tr>
+        <tr>
+          <th>301.0</th>
+          <td>[12.9377040863, 3.52617126703, 3.65747460723, ...</td>
+          <td>[17.5439834595, 10.5442306995, 17.4174804688, ...</td>
+          <td>[string-property, string-property, string-prop...</td>
+          <td>94</td>
+          <td>global</td>
+        </tr>
+        <tr>
+          <th>302.0</th>
+          <td>[25.2188520432, 15.9014782906, 30.8562289476, ...</td>
+          <td>[20.8486938477, 24.9174804688, 5.15378880501, ...</td>
+          <td>[string-property, string-property, string-prop...</td>
+          <td>97</td>
+          <td>global</td>
+        </tr>
+        <tr>
+          <th>303.0</th>
+          <td>[15.7906951904, 24.0488576889, 7.62989842892, ...</td>
+          <td>[33.6362304688, 28.2095947266, 1.49622058868, ...</td>
+          <td>[string-property, string-property, string-prop...</td>
+          <td>101</td>
+          <td>global</td>
+        </tr>
+        <tr>
+          <th>304.0</th>
+          <td>[14.7906951904, 0.589638307691, 25.5264782906,...</td>
+          <td>[30.3486938477, 14.8486938477, 46.547996521, 3...</td>
+          <td>[string-property, string-property, string-prop...</td>
+          <td>98</td>
+          <td>global</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+|
 
 The ``patch_report`` method can be used to return a dataframe which (for
 this example) contains the ``countdown`` attribute of each NetLogo
@@ -276,7 +353,7 @@ indices following the pycor coordinates.
 
 
 
-.. image:: example1_files/example1_18_0.png
+.. image:: example1_files/example1_20_0.png
 
 
 The dataframes can be manipulated with any of the existing Pandas
@@ -305,7 +382,7 @@ updates the NetLogo environment from a dataframe.
 
 
 
-.. image:: example1_files/example1_21_0.png
+.. image:: example1_files/example1_23_0.png
 
 
 Finally, the ``kill_workspace()`` method shuts down the NetLogo
