@@ -1,6 +1,6 @@
-****************
-:mod:`pyNetLogo`
-****************
+**************************
+:mod:`pyNetLogo.pynetlogo`
+**************************
 
-.. automodule:: pyNetLogo
+.. automodule:: pynetlogo
    :members:
