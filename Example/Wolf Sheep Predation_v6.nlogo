@@ -1,14 +1,15 @@
-globals [grass]  ;; keep track of how much grass there is
+globals [grass glob_str]  ;; keep track of how much grass there is
 ;; Sheep and wolves are both breeds of turtle.
 breed [sheep a-sheep]  ;; sheep is its own plural, so we use "a-sheep" as the singular.
 breed [wolves wolf]
 turtles-own [energy]       ;; both wolves and sheep have energy
 patches-own [countdown]
-sheep-own [value]
+sheep-own [value sheep_str]
 
 to setup
   clear-all
   ask patches [ set pcolor green ]
+  set glob_str "global"
   ;; check GRASS? switch.
   ;; if it is true, then grass grows and the sheep eat it
   ;; if it false, then the sheep don't need to eat
@@ -22,6 +23,7 @@ to setup
   create-sheep initial-number-sheep  ;; create the sheep, then initialize their variables
   [
     set color white
+    set sheep_str "sheep"
     set size 1.5  ;; easier to see
     set label-color blue - 2
     set energy random (2 * sheep-gain-from-food)
@@ -129,11 +131,11 @@ end
 GRAPHICS-WINDOW
 350
 10
-817
-478
+851
+512
 -1
 -1
-9.0
+9.67
 1
 14
 1
