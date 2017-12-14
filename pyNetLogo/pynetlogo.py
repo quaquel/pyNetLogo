@@ -82,11 +82,7 @@ def find_jars(path):
     jars = []
     for root, _, files in os.walk(path):
         for file in files:  # @ReservedAssignment
-<<<<<<< HEAD
             if file=='NetLogo.jar':
-=======
-            if file == 'NetLogo.jar':
->>>>>>> origin/master
                 jars.insert(0,os.path.join(root, file))
             elif file.endswith(".jar"):
                 jars.append(os.path.join(root, file))
