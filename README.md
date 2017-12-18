@@ -1,9 +1,9 @@
 pyNetLogo
 =========
 
-A basic interface to netlogo from Python. The interface supports running
-netlogo with user interface, and without user interface (i.e. headless). 
-The interface offers the basic methods for executing commands and getting
-return values from reporters. 
 
-The package uses jpype for connecting to java. 
+**Documentation:** http://pynetlogo.readthedocs.io/en/latest/
+
+**Requirements:** [JPype](https://jpype.readthedocs.io/en/latest/), [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [pandas](https://pandas.pydata.org/)
+
+**Installation:** Available with the pip package manager: `pip install pyNetLogo` 
