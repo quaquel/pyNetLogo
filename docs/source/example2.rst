@@ -153,7 +153,7 @@ path to it.
 
     import os
     
-    #Push the current working directory of the notebook to a "cwd" variable on the engines that can be accessed later
+    #Push the current working directory to a "cwd" variable on the engines that can be accessed later
     direct_view.push(dict(cwd=os.getcwd()))
 
 
@@ -251,7 +251,6 @@ serialization with msgpack, or hierarchical HDF5 storage.
 
     lview = client.load_balanced_view()
     
-    t0 = time.time()
     results = pd.DataFrame(lview.map_sync(simulation, param_values))
 
 .. code:: python3
