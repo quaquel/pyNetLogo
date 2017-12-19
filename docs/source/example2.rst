@@ -558,7 +558,7 @@ second-order interactions between inputs estimated from the S2 values.
         
         # prepare data
         # use the absolute values of all the indices
-        sobol_indices = {key:np.abs(stats) for key, stats in sobol_indices.items()}
+        #sobol_indices = {key:np.abs(stats) for key, stats in sobol_indices.items()}
         
         # dataframe with ST and S1
         sobol_stats = {key:sobol_indices[key] for key in ['ST', 'S1']}
@@ -570,6 +570,7 @@ second-order interactions between inputs estimated from the S2 values.
         # dataframe with s2
         s2 = pd.DataFrame(sobol_indices['S2'], index=problem['names'], 
                           columns=problem['names'])
+        s2[s2<0.0]=0. #Set negative values to 0 (artifact from small sample sizes)
         s2max = s2.max().max()
         s2min = s2.min().min()
     

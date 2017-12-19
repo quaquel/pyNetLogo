@@ -451,10 +451,12 @@ class NetLogoLink(object):
         commands = []
         fns = {}
         for variable in cols:
-            fn = r'{0}{1}{2}{3}'.format(os.getcwd(),
-                                        os.sep,
-                                        variable,
-                                        '.txt')
+            #Use hash as unique identifier in case of parallel runs
+            fn = r'{0}{1}{2}_{3}{4}'.format(os.getcwd(),
+                                            os.sep,
+                                            hash(self),
+                                            variable,
+                                            '.txt')
             fns[variable] = fn
             fn = '"{}"'.format(fn)
             fn = fn.replace(os.sep, '/')
