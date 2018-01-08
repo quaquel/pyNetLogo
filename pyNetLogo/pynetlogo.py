@@ -21,11 +21,9 @@ __all__ = ['NetLogoException',
     
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
-#Jar supports NetLogo 5.2 or 6.0
+#Jar supports NetLogo 5.x or 6.0
 module_name = {'5':'netlogoLink_v52.NetLogoLink',
                '6':'netlogoLink_v6.NetLogoLink'}
-jar_sep ={'win32':';',
-          'darwin':':'}
 
 _logger = None
 LOGGER_NAME = "EMA"
@@ -143,7 +141,7 @@ def find_netlogo_mac():
 
 
 def find_netlogo_linux():
-    raise NotImplementedError
+    raise NotImplementedError('NetLogoLink requires the netlogo_home and netlogo_version parameters on Linux')
 
 def get_netlogo_home():
     if sys.platform=='win32':
@@ -168,7 +166,8 @@ class NetLogoLink(object):
     """Create a link with NetLogo. Underneath, the NetLogo JVM is started through Jpype.
     
     If `netlogo_home`, `netlogo_version`, or `jvm_home` are not provided, the link
-    will try to identify the correct parameters automatically.
+    will try to identify the correct parameters automatically on Mac or Windows.
+    `netlogo_home` and `netlogo_version` are required on Linux.
 
     Parameters
     ----------
@@ -177,9 +176,9 @@ class NetLogoLink(object):
     thd : bool, optional
         If true, use NetLogo 3D
     netlogo_home : str, optional
-        Path to the NetLogo installation directory
+        Path to the NetLogo installation directory (required on Linux)
     netlogo_version : {'6','5'}, optional
-        Used to choose appropriate command syntax for the link methods
+        Used to choose appropriate command syntax for the link methods (required on Linux)
     jvm_home : str, optional
         Java home directory for Jpype
 
@@ -198,11 +197,16 @@ class NetLogoLink(object):
         self.netlogo_home = netlogo_home
         self.netlogo_version = netlogo_version
         self.jvm_home = jvm_home
+
+        if sys.platform=='win32':
+            jar_sep = ';'
+        else:
+            jar_sep = ':'
         
         if not jpype.isJVMStarted():
             jars = find_jars(netlogo_home)
             jars.append(os.path.join(PYNETLOGO_HOME, 'java', 'netlogoLink_combined.jar'))     
-            joined_jars = jar_sep[sys.platform].join(jars)
+            joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
             try:
                 jpype.startJVM(jvm_home, jarpath)
