@@ -18,28 +18,29 @@ import jpype
 
 __all__ = ['NetLogoException',
            'NetLogoLink']
-    
+
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
-#Jar supports NetLogo 5.x or 6.0
-module_name = {'5':'netlogoLink_v52.NetLogoLink',
-               '6':'netlogoLink_v6.NetLogoLink'}
+# Jar supports NetLogo 5.x or 6.0
+module_name = {'5': 'netlogoLink_v52.NetLogoLink',
+               '6': 'netlogoLink_v6.NetLogoLink'}
 
 _logger = None
 LOGGER_NAME = "EMA"
 DEFAULT_LEVEL = DEBUG
 INFO = INFO
 
+
 def find_netlogo(path):
     """Find the most recent version of NetLogo in the specified directory
-    
+
     Parameters
     ----------
     path : str
         Path to the root programs directory
 
     Returns
-    -------    
+    -------
     str
         Path to the most recent NetLogo installation directory (assuming
         default NetLogo directory names)
@@ -48,40 +49,40 @@ def find_netlogo(path):
     ------
     IndexError
         If no NetLogo version is found in path
-    
+
     """
-    
+
     path = os.path.abspath(path)
-    netlogo_versions = [entry for entry in os.listdir(path) if 'netlogo' in 
+    netlogo_versions = [entry for entry in os.listdir(path) if 'netlogo' in
                         entry.lower()]
-    
-    # sort handles version numbers properly as long as pattern of 
+
+    # sort handles version numbers properly as long as pattern of
     # directory name is not changed
     netlogo_versions.sort(reverse=True)
-    
+
     return netlogo_versions[0]
 
 
 def find_jars(path):
     """Find all jar files in directory and return as list
-    
+
     Parameters
     ----------
     path : str
         Path in which to find jar files
-    
+
     Returns
-    -------    
+    -------
     str
         List of jar files
 
     """
-    
+
     jars = []
     for root, _, files in os.walk(path):
         for file in files:  # @ReservedAssignment
             if file=='NetLogo.jar':
-                jars.insert(0,os.path.join(root, file))
+                jars.insert(0, os.path.join(root, file))
             elif file.endswith(".jar"):
                 jars.append(os.path.join(root, file))
 
@@ -91,11 +92,11 @@ def find_jars(path):
 def establish_netlogoversion(path):
     # TODO: python3 compliance
     pattern = re.compile(r'(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$')
-    
+
     netlogo = os.path.basename(os.path.normpath(path))
     match = pattern.search(netlogo)
     version = match.group()
-    
+
     main_version = version[0]
 
     return main_version
@@ -105,7 +106,7 @@ def find_netlogo_windows():
     netlogo = None
     if os.environ['PROGRAMW6432']:
         paths = [os.environ['PROGRAMFILES(X86)'],
-                 os.environ['PROGRAMW6432']] 
+                 os.environ['PROGRAMW6432']]
         for path in paths:
             try:
                 netlogo = find_netlogo(path)
@@ -121,12 +122,12 @@ def find_netlogo_windows():
             pass
         else:
             netlogo = os.path.join(path, netlogo)
-    
+
     return netlogo
 
 
 def find_netlogo_mac():
-    paths = ['/Applications', 
+    paths = ['/Applications',
              os.path.join(os.getenv('HOME'), 'Applications')]
     netlogo = None
     for path in paths:
@@ -136,12 +137,14 @@ def find_netlogo_mac():
             pass
         else:
             netlogo = os.path.join(path, netlogo)
-        
+
     return netlogo
 
 
 def find_netlogo_linux():
-    raise NotImplementedError('NetLogoLink requires the netlogo_home and netlogo_version parameters on Linux')
+    raise NotImplementedError(('NetLogoLink requires the netlogo_home '
+                               'and netlogo_version parameters on Linux'))
+
 
 def get_netlogo_home():
     if sys.platform=='win32':
@@ -226,11 +229,10 @@ class NetLogoLink(object):
             gui=False
         
         self.link = link(jpype.java.lang.Boolean(gui),jpype.java.lang.Boolean(thd))
-        
-            
+
     def load_model(self, path):
         """Load a NetLogo model.
-        
+
         Parameters
         ----------
         path : str
@@ -242,7 +244,7 @@ class NetLogoLink(object):
             In case the model is not found
         NetLogoException
             In case of a NetLogo exception
-        
+
         """
 
         try:
@@ -250,15 +252,13 @@ class NetLogoLink(object):
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
 
-
     def kill_workspace(self):
         """Close NetLogo and shut down the JVM.
         
         """
         
         self.link.killWorkspace()
-        
-        
+
     def command(self, netlogo_command):
         """Execute the supplied command in NetLogo
         
@@ -279,7 +279,6 @@ class NetLogoLink(object):
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
 
-            
     def report(self, netlogo_reporter):
         """Return values from a NetLogo reporter
 
@@ -303,7 +302,6 @@ class NetLogoLink(object):
             return self._cast_results(result)
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
-        
         
     def patch_report(self, attribute):
         """Return patch attributes from NetLogo
@@ -347,7 +345,6 @@ class NetLogoLink(object):
             
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
-            
     
     def patch_set(self, attribute, data):
         """Set patch attributes in NetLogo
@@ -384,7 +381,6 @@ class NetLogoLink(object):
             
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
-        
         
     def repeat_command(self, netlogo_command, reps):
         """Execute the supplied command in NetLogo a given number of times
@@ -504,8 +500,6 @@ class NetLogoLink(object):
 
         return results_df
 
-
-
     def write_NetLogo_attriblist(self, agent_data, agent_name):
         """Update attributes of a set of NetLogo agents from a DataFrame
 
@@ -571,8 +565,6 @@ class NetLogoLink(object):
             
         except jpype.JavaException as ex :
             raise NetLogoException(ex.message())
-
-
 
     def _cast_results(self, results):
         """Convert results to the proper python data type. The NLResults
