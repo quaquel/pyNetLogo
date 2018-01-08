@@ -23,7 +23,7 @@ Documentation
    install.rst
    example1.rst
    example2.rst
-   ./_docs/pynetlogo.rst
+   Core module documentation <./_docs/pynetlogo.rst>
 
 
 
