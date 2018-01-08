@@ -16,18 +16,16 @@ executing the ``setup`` command in NetLogo.
 .. code:: python3
 
     %matplotlib inline
-    import numpy as np
+
     import pandas as pd
     import matplotlib.pyplot as plt
     import seaborn as sns
     sns.set_style('white')
     sns.set_context('talk')
     
-    import jpype
-    import pyNetLogo.pyNetLogo
+    import pyNetLogo
     
-    
-    netlogo = pyNetLogo.pyNetLogo.NetLogoLink(gui=True)
+    netlogo = pyNetLogo.NetLogoLink(gui=True)
     
     netlogo.load_model(r'Wolf Sheep Predation_v6.nlogo')
     netlogo.command('setup')

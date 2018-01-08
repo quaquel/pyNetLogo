@@ -31,8 +31,7 @@ repository at https://github.com/quaquel/pyNetLogo.
     sns.set_style('white')
     sns.set_context('talk')
     
-    import jpype
-    import pyNetLogo.pyNetLogo
+    import pyNetLogo
     
     #Import the sampling and analysis modules for a Sobol variance-based 
     #sensitivity analysis
@@ -184,12 +183,10 @@ NetLogo, and load the example model on each of the engines.
     import os
     os.chdir(cwd)
     
-    import jpype
-    import pyNetLogo.pyNetLogo
+    import pyNetLogo
     import pandas as pd
-    import numpy as np
     
-    netlogo = pyNetLogo.pyNetLogo.NetLogoLink(gui=False)
+    netlogo = pyNetLogo.NetLogoLink(gui=False)
     netlogo.load_model(r'Wolf Sheep Predation_v6.nlogo')
 
 We can then use the ipyparallel map functionality to run the sampled
@@ -348,7 +345,7 @@ parameter, and the seaborn library to plot a linear trend fit.
         x = param_values[:,i]
         sns.regplot(x, y, ax=a, ci=None, color='k',scatter_kws={'alpha':0.2, 's':4, 'color':'gray'})
         pearson = scipy.stats.pearsonr(x, y)
-        a.annotate("r: {:6.3f}".format(pearson[0]), xy=(0.15, 0.85), xycoords='axes fraction',fontsize=13)
+        a.annotate("r: {:6.3f}".format(pearson[0]), xy=(0.15, 0.85), xycoords='axes fraction', fontsize=13)
         if divmod(i,ncol)[1]>0:
             a.get_yaxis().set_visible(False)
         a.set_xlabel(problem['names'][i])
@@ -640,9 +637,3 @@ In this case, the “sheep-gain-from-food” variable has strong
 interactions with the “wolf-gain-from-food” and “wolf-reproduce” inputs
 in particular. The size of the ST and S1 circles correspond to the
 normalized variable importances.
-
-Finally, the kill_workspace() function shuts down the NetLogo instance.
-
-.. code:: python3
-
-    netlogo.kill_workspace()

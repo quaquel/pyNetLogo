@@ -9,7 +9,7 @@ pyNetLogo can be installed using the pip package manager, with the following com
 
 	``pip install pynetlogo``
 
-By default, pyNetLogo and Jpype will attempt to automatically identify the NetLogo version and installation directory, as well as the Java home directory. In case of issues (e.g. if NetLogo was installed in a different directory, or if the Java path is not found on a Mac), these parameters can be passed directly to the NetLogoLink class as described in the module documentation.
+By default, pyNetLogo and Jpype will attempt to automatically identify the NetLogo version and installation directory on Mac or Windows, as well as the Java home directory. On Linux, or in case of issues (e.g. if NetLogo was installed in a different directory, or if the Java path is not found on a Mac), these parameters can be passed directly to the NetLogoLink class as described in the module documentation.
 
 Known bugs and limitations
 --------------------------

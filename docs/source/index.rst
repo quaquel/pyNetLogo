@@ -17,15 +17,13 @@ and `RNetLogo <https://cran.r-project.org/web/packages/RNetLogo/index.html>`_.
 Documentation
 =============
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
    
    install.rst
    example1.rst
    example2.rst
-   ./_docs/pyNetLogo.rst
+   ./_docs/pynetlogo.rst
 
 
 
