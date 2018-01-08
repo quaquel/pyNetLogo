@@ -210,6 +210,7 @@ class NetLogoLink(object):
         if not jpype.isJVMStarted():
             jars = find_jars(netlogo_home)
             jars.append(os.path.join(PYNETLOGO_HOME,
+                                     'java', 'netlogolink.jar'))
             joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
             try:
