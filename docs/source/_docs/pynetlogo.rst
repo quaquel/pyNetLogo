@@ -1,6 +1,6 @@
 ****************
-:mod:`pynetlogo`
+:mod:`core`
 ****************
 
-.. automodule:: pyNetLogo.pynetlogo
+.. automodule:: pyNetLogo.core
    :members:
