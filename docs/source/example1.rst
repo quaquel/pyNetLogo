@@ -11,7 +11,6 @@ available from the pyNetLogo repository at
 https://github.com/quaquel/pyNetLogo.
 
 We start by instantiating a link to NetLogo, loading the model, and
-executing the ``setup`` command in NetLogo.
 
 .. code:: python3
 
