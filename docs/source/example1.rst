@@ -11,6 +11,7 @@ available from the pyNetLogo repository at
 https://github.com/quaquel/pyNetLogo.
 
 We start by instantiating a link to NetLogo, loading the model, and
+executing the ``setup`` command in NetLogo. This code assumes a Windows or Mac environment, under which the ``NetLogoLink`` class will by default attempt to use the most recent NetLogo installation found in the default program directory. The  ``netlogo_home`` and ``netlogo_version`` parameters can be passed to the class to use a different installation, and are required under Linux. 
 
 .. code:: python3
 
