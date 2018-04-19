@@ -466,7 +466,7 @@ class NetLogoLink(object):
             fn = r'{0}{1}{2}_{3}{4}'.format(os.getcwd(),
                                             os.sep,
                                             hash(self),
-                                            variable,
+                                            variable.replace('?', ''),
                                             '.txt')
             fns[variable] = fn
             fn = '"{}"'.format(fn)
