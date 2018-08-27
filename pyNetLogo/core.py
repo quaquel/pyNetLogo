@@ -242,12 +242,14 @@ class NetLogoLink(object):
 
         Raises
         ------
-        IOError
-            In case the model is not found
+        FileNotFoundError
+            in case path does not exist
         NetLogoException
             In case of a NetLogo exception
 
         """
+        if not os.path.isfile(path):
+            raise FileNotFoundError()
 
         try:
             self.link.loadModel(path)
