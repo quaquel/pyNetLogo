@@ -6,4 +6,6 @@ An interface to access [NetLogo](https://ccl.northwestern.edu/netlogo/) from Pyt
 
 **Requirements:** [JPype](https://jpype.readthedocs.io/en/latest/), [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [pandas](https://pandas.pydata.org/)
 
-**Installation:** Available with the pip package manager: `pip install pyNetLogo` 
+**Installation:** Available with the pip package manager: `pip install pyNetLogo`, but it
+depends on jpype which needs to be installed seperately. See [the instalation instructions](https://pynetlogo.readthedocs.io/en/latest/install.html)
+for more details
