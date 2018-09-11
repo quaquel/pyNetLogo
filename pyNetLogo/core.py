@@ -6,10 +6,11 @@ To do: check Mac support and handling of custom directories
 from __future__ import unicode_literals, absolute_import
 import os
 import re
+import string
 import sys
 
-import logging
-from logging import Handler, DEBUG, INFO
+
+from logging import DEBUG, INFO
 
 import numpy as np
 import pandas as pd
@@ -30,6 +31,7 @@ LOGGER_NAME = "EMA"
 DEFAULT_LEVEL = DEBUG
 INFO = INFO
 
+valid_chars = '[]-_.() {}{}'.format(string.ascii_letters, string.digits)
 
 def find_netlogo(path):
     """Find the most recent version of NetLogo in the specified directory
@@ -218,9 +220,6 @@ class NetLogoLink(object):
             except RuntimeError as e:
                 raise e
 
-            # Causes problems with 6.0?
-            # jpype.java.lang.System.setProperty('user.dir', netlogo_home)
-
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless', 'true')
 
@@ -303,6 +302,34 @@ class NetLogoLink(object):
 
         try:
             result = self.link.report(netlogo_reporter)
+            return self._cast_results(result)
+        except jpype.JavaException as ex:
+            raise NetLogoException(ex.message())
+
+    def report_while(self, netlogo_reporter, condition, command='go', max_seconds=0):
+        """Return values from a NetLogo reporter while a condition is true
+        in the NetLogo model
+
+        Parameters
+        ----------
+        netlogo_reporter : str
+            Valid NetLogo reporter
+        condition: str
+            Valid boolean NetLogo reporter
+        command: str
+            NetLogo command used to execute the model
+        max_seconds: int, optional
+            Time limit used to break execution
+
+        Raises
+        ------
+        NetLogoException
+            If a LogoException or CompilerException is raised by NetLogo
+
+        """
+
+        try:
+            result = self.link.doReportWhile(command, netlogo_reporter, condition, max_seconds)
             return self._cast_results(result)
         except jpype.JavaException as ex:
             raise NetLogoException(ex.message())
@@ -610,35 +637,49 @@ class NetLogoLink(object):
 
         """
 
-        java_dtype = results.type
+        try:
+            converted_results = type_convert(results)
+        except:
+            converted_results=[]
+            for i in results:
+                converted_results.append(type_convert(i))
 
-        if java_dtype == "Boolean":
-            results = results.getResultAsBoolean()
-            if results == 1:
-                return True
-            else:
-                return False
-        elif java_dtype == "String":
-            return results.getResultAsString()
-        elif java_dtype == "Integer":
-            return results.getResultAsInteger()
-        elif java_dtype == "Double":
-            return results.getResultAsDouble()
-        elif java_dtype == "BoolList":
-            results = results.getResultAsBooleanArray()
+        return converted_results
 
-            tr = []
-            for entry in results:
-                if entry == 1:
-                    tr.append(True)
-                else:
-                    tr.append(False)
-            return tr
-        elif java_dtype == "StringList":
-            return results.getResultAsStringArray()
-        elif java_dtype == "IntegerList":
-            return results.getResultAsIntegerArray()
-        elif java_dtype == "DoubleList":
-            return np.array(results.getResultAsDoubleArray())
+
+def type_convert(results):
+    '''Helper function for converting from Java datatypes to
+    Python datatypes'''
+
+    java_dtype = results.type
+
+    if java_dtype == "Boolean":
+        results = results.getResultAsBoolean()
+        if results == 1:
+            return True
         else:
-            raise NetLogoException("Unknown datatype")
+            return False
+    elif java_dtype == "String":
+        return results.getResultAsString()
+    elif java_dtype == "Integer":
+        return results.getResultAsInteger()
+    elif java_dtype == "Double":
+        return results.getResultAsDouble()
+    elif java_dtype == "BoolList":
+        results = results.getResultAsBooleanArray()
+
+        tr = []
+        for entry in results:
+            if entry == 1:
+                tr.append(True)
+            else:
+                tr.append(False)
+        return tr
+    elif java_dtype == "StringList":
+        return results.getResultAsStringArray()
+    elif java_dtype == "IntegerList":
+        return results.getResultAsIntegerArray()
+    elif java_dtype == "DoubleList":
+        return np.array(results.getResultAsDoubleArray())
+    else:
+        raise NetLogoException("Unknown datatype")
