@@ -216,10 +216,21 @@ class NetLogoLink(object):
                                      'java', 'netlogolink.jar'))
             joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
+
             try:
                 jpype.startJVM(jvm_home, jarpath)
             except RuntimeError as e:
                 raise e
+
+            docs = '{}/docs'.format(netlogo_home)
+            exts = '{}/extensions'.format(netlogo_home)
+            models = '{}/models'.format(netlogo_home)
+            jpype.java.lang.System.setProperty('netlogo.docs.dir', docs)
+            jpype.java.lang.System.setProperty('netlogo.extensions.dir', exts)
+            jpype.java.lang.System.setProperty('netlogo.models.dir', models)
+
+            # Causes problems with 6.0?
+            # jpype.java.lang.System.setProperty('user.dir', netlogo_home)
 
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless', 'true')
