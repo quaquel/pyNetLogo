@@ -225,14 +225,16 @@ class NetLogoLink(object):
             if sys.platform == 'darwin':
                 exts = '{}/extensions'.format(netlogo_home)
             elif sys.platform == 'win32':
-                pass
+                exts = '{}/app/extensions'.format(netlogo_home)
             else:
                 exts = '{}/app/extensions'.format(netlogo_home)
 
-            jpype.java.lang.System.setProperty('netlogo.extensions.dir', exts)
+            jpype.java.lang.System.setProperty('netlogo.extensions.dir',
+                                               exts)
 
             if sys.platform == 'darwin':
-                jpype.java.lang.System.setProperty('java.awt.headless', 'true')
+                jpype.java.lang.System.setProperty('java.awt.headless',
+                                                   'true')
 
         link = jpype.JClass(module_name[self.netlogo_version])
 
