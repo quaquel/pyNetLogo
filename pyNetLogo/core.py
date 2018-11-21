@@ -6,6 +6,7 @@ To do: check Mac support and handling of custom directories
 from __future__ import unicode_literals, absolute_import
 import os
 import re
+import tempfile
 import string
 import sys
 
@@ -215,10 +216,20 @@ class NetLogoLink(object):
                                      'java', 'netlogolink.jar'))
             joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
+
             try:
                 jpype.startJVM(jvm_home, jarpath)
             except RuntimeError as e:
                 raise e
+
+            if sys.platform == 'darwin':
+                exts = '{}/extensions'.format(netlogo_home)
+            elif sys.platform == 'win32':
+                pass
+            else:
+                exts = '{}/app/extensions'.format(netlogo_home)
+
+            jpype.java.lang.System.setProperty('netlogo.extensions.dir', exts)
 
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless', 'true')
@@ -488,15 +499,15 @@ class NetLogoLink(object):
         results_df = pd.DataFrame(columns=cols,
                                   index=np.arange(tick, tick+reps))
 
+        prefix = ''.join([os.getcwd(), os.sep])
+        tempfolder = tempfile.mkdtemp(prefix=prefix)
+
         commands = []
         fns = {}
         for variable in cols:
-            # Use hash as unique identifier in case of parallel runs
-            fn = r'{0}{1}{2}_{3}{4}'.format(os.getcwd(),
-                                            os.sep,
-                                            hash(self),
-                                            variable,
-                                            '.txt')
+            fn = r'{0}/{1}{2}'.format(tempfolder,
+                                      variable,
+                                      '.txt')
             fns[variable] = fn
             fn = '"{}"'.format(fn)
             fn = fn.replace(os.sep, '/')
@@ -542,6 +553,8 @@ class NetLogoLink(object):
                 results_df.loc[:, key] = result
 
             os.remove(value)
+
+        os.rmdir(tempfolder)
 
         return results_df
 
