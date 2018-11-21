@@ -222,6 +222,7 @@ class NetLogoLink(object):
             except RuntimeError as e:
                 raise e
 
+            # TODO:: move to os.path.join
             if sys.platform == 'darwin':
                 exts = '{}/extensions'.format(netlogo_home)
             elif sys.platform == 'win32':
@@ -417,7 +418,7 @@ class NetLogoLink(object):
 
         try:
             np.set_printoptions(threshold=np.prod(data.shape))
-            datalist = '['+str(data.as_matrix().flatten()).strip('[ ')
+            datalist = '['+str(data.values.flatten()).strip('[ ')
             datalist = ' '.join(datalist.split())
             if self.netlogo_version == '6':
                 command = '(foreach map [px -> [pxcor] of px] \
