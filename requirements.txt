@@ -4,4 +4,6 @@ numpy
 scipy
 pandas
 JPype1
+sphinx>=1.4
+ipykernel
 nbsphinx
