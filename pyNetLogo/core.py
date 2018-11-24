@@ -16,6 +16,7 @@ from logging import DEBUG, INFO
 import numpy as np
 import pandas as pd
 import jpype
+import warnings
 
 
 __all__ = ['NetLogoException',
@@ -221,17 +222,24 @@ class NetLogoLink(object):
                 jpype.startJVM(jvm_home, jarpath)
             except RuntimeError as e:
                 raise e
-
-            # TODO:: move to os.path.join
+            
+            # enable extensions
             if sys.platform == 'darwin':
-                exts = '{}/extensions'.format(netlogo_home)
+                exts = os.path.join(netlogo_home, 'extensions')
             elif sys.platform == 'win32':
-                exts = '{}/app/extensions'.format(netlogo_home)
+                exts = os.path.join(netlogo_home, 'app', 'extensions')        
             else:
-                exts = '{}/app/extensions'.format(netlogo_home)
+                exts = os.path.join(netlogo_home, 'app', 'extensions')        
 
-            jpype.java.lang.System.setProperty('netlogo.extensions.dir',
+            # check if default extension folder exists, raise
+            # a warning otherwise
+            if os.path.exists(exts):
+                jpype.java.lang.System.setProperty('netlogo.extensions.dir',
                                                exts)
+            else:
+                warnings.warn(('could not find default NetLogo ',
+                               'extensions folder. Extensions not ',
+                               'available'))
 
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless',
