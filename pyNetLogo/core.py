@@ -240,7 +240,8 @@ class NetLogoLink(object):
                 warnings.warn(('could not find default NetLogo ',
                                'extensions folder. Extensions not ',
                                'available'))
-
+                
+            
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless',
                                                    'true')
