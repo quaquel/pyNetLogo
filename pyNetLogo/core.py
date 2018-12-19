@@ -189,11 +189,15 @@ class NetLogoLink(object):
         Used to choose command syntax for link methods (required on Linux)
     jvm_home : str, optional
         Java home directory for Jpype
+    jvmargs : list of str, optional
+              additional arguments that should be used when starting
+              the jvm
 
     """
 
     def __init__(self, gui=False, thd=False, netlogo_home=None,
-                 netlogo_version=None, jvm_home=None):
+                 netlogo_version=None, jvm_home=None,
+                 jvmargs=[]):
 
         if not netlogo_home:
             netlogo_home = get_netlogo_home()
@@ -218,8 +222,10 @@ class NetLogoLink(object):
             joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
 
+            jvm_args = [jarpath, ] + jvmargs
+
             try:
-                jpype.startJVM(jvm_home, jarpath)
+                jpype.startJVM(jvm_home, *jvm_args)
             except RuntimeError as e:
                 raise e
             
