@@ -24,8 +24,8 @@ Documentation
    ./_docs/introduction.ipynb
    ./_docs/SALib_ipyparallel.ipynb
    ./_docs/SALib_multiprocessing.ipynb
-   Core module documentation <./_docs/pynetlogo.rst>
-
+   Detailed Documentation <./_docs/pynetlogo.rst>
+   Changelog <./changelog.rst>
 
 
 Indices and tables

@@ -1,5 +1,5 @@
 """
-To do: check Mac support and handling of custom directories
+
 
 """
 
@@ -19,8 +19,8 @@ import jpype
 import warnings
 
 
-__all__ = ['NetLogoException',
-           'NetLogoLink']
+__all__ = ['NetLogoLink',
+           'NetLogoException']
 
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
