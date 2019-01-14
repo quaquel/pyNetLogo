@@ -1,8 +1,8 @@
 ## pyNetLogo
 
 [![Documentation Status](https://readthedocs.org/projects/emaworkbench/badge/?version=latest)](http://pynetlogo.readthedocs.org/en/latest/?badge=master)
-[![PyPi](https://img.shields.io/pypi/v/pynetlogo.svg)]
-[![PyPi](https://img.shields.io/pypi/dm/pynetlogo.svg)]
+[![PyPi](https://img.shields.io/pypi/v/pynetlogo.svg)
+[![PyPi](https://img.shields.io/pypi/dm/pynetlogo.svg)
 
 An interface to access [NetLogo](https://ccl.northwestern.edu/netlogo/) from Python. The interface offers methods for executing commands and returning values from reporters. It can be used with the NetLogo graphical user interface, or without (i.e. in headless mode). pyNetLogo is currently compatible with NetLogo 5.2, 5.3, and 6.0, and should support most NetLogo extensions.
 
