@@ -712,5 +712,11 @@ def type_convert(results):
         return results.getResultAsIntegerArray()
     elif java_dtype == "DoubleList":
         return np.array(results.getResultAsDoubleArray())
+    elif java_dtype == "NestedList":
+        result = results.getResultAsObject()
+        value = []
+        for entry in result:
+            value.append(type_convert(entry))
+        return np.asarray(value)
     else:
         raise NetLogoException("Unknown datatype")
