@@ -252,6 +252,10 @@ class NetLogoLink(object):
                 jpype.java.lang.System.setProperty('java.awt.headless',
                                                    'true')
 
+            if not gui:
+                jpype.java.lang.System.setProperty('org.nlogo.preferHeadless',
+                                                    'true')
+
         link = jpype.JClass(module_name[self.netlogo_version])
 
         if sys.platform == 'darwin' and gui:
