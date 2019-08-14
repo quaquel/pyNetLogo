@@ -197,6 +197,7 @@ class NetLogoLink(object):
         Path to the NetLogo installation directory (required on Linux)
     netlogo_version : {'6','5'}, optional
         Used to choose command syntax for link methods (required on Linux)
+        if this is provided, netlogo_home should be provided as well
     jvm_home : str, optional
         Java home directory for Jpype
     jvmargs : list of str, optional
@@ -208,6 +209,9 @@ class NetLogoLink(object):
     def __init__(self, gui=False, thd=False, netlogo_home=None,
                  netlogo_version=None, jvm_home=None,
                  jvmargs=[]):
+
+        if netlogo_version is not None:
+            assert (netlogo_home is not None)
 
         if not netlogo_home:
             netlogo_home = get_netlogo_home()
