@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
     def test_find_netlogo(self, mocked_os):
         mocked_os.path.abspath.return_value = '/Applications'
         mocked_os.listdir.return_value = ['Netlogo 5.1.1', 'Netlogo 5.3.0',
-                                          'Netlogo 6.0']
+                                          'Netlogo 6.0', 'Netlogo 6.1']
         
         version = pyNetLogo.find_netlogo('/Applications')
         self.assertEqual(version, 'Netlogo 6.0')

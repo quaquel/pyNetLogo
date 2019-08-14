@@ -24,9 +24,15 @@ __all__ = ['NetLogoLink',
 
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
-# Jar supports NetLogo 5.x or 6.0
-module_name = {'5': 'NetLogoLinkV5.NetLogoLink',
-               '6': 'NetLogoLinkV6.NetLogoLink'}
+# Jar supports NetLogo 5.x, 6.0, or 6.1
+jar_name = {'5': 'netlogolink53.jar',
+            '6.0': 'netlogolink60.jar',
+            '6.1': 'netlogolink61.jar'}
+
+
+class_name = {'5': 'NetLogoLinkV5.NetLogoLink',
+            '6.0': 'NetLogoLinkV6.NetLogoLink',
+            '6.1': 'NetLogoLinkV61.NetLogoLink'}
 
 _logger = None
 LOGGER_NAME = "EMA"
@@ -102,8 +108,12 @@ def establish_netlogoversion(path):
     version = match.group()
 
     main_version = version[0]
+    
+    if main_version == '5':
+        return main_version
+    else:
+        return version[0:3]
 
-    return main_version
 
 
 def find_netlogo_windows():
@@ -217,8 +227,11 @@ class NetLogoLink(object):
 
         if not jpype.isJVMStarted():
             jars = find_jars(netlogo_home)
+            
+            netlogolink_jar = jar_name[self.netlogo_version]
+            
             jars.append(os.path.join(PYNETLOGO_HOME,
-                                     'java', 'netlogolink.jar'))
+                                     'java', netlogolink_jar))
             joined_jars = jar_sep.join(jars)
             jarpath = '-Djava.class.path={}'.format(joined_jars)
 
@@ -256,7 +269,7 @@ class NetLogoLink(object):
                 jpype.java.lang.System.setProperty('org.nlogo.preferHeadless',
                                                     'true')
 
-        link = jpype.JClass(module_name[self.netlogo_version])
+        link = jpype.JClass(class_name[self.netlogo_version])
 
         if sys.platform == 'darwin' and gui:
             gui = False
@@ -723,4 +736,4 @@ def type_convert(results):
             value.append(type_convert(entry))
         return np.asarray(value)
     else:
-        raise NetLogoException("Unknown datatype")
+        raise NetLogoException("Unknown datatype: {}".format(java_dtype))

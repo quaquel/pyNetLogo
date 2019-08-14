@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import java.lang.Thread;
 
 
-public class NetLogoLink {
+public class NetLogoLink{
 	private org.nlogo.workspace.Controllable workspace = null;
 	private java.io.IOException caughtEx = null;
 	private boolean isGUIworkspace;
@@ -130,10 +130,12 @@ public class NetLogoLink {
 					EventQueue.invokeAndWait ( 
 						new Runnable() {
 							public void run() {
-								try
-								{ App.app().open(path); }
-								catch( java.io.IOException ex)
-								{ caughtEx = ex; }
+								try {
+									/* netlogo 6.1*/
+									App.app().open(path);
+								} catch( java.io.IOException ex) {
+									{caughtEx = ex; }
+								}
 							} } );
 				}
 				catch( java.lang.reflect.InvocationTargetException ex ) {
@@ -149,7 +151,7 @@ public class NetLogoLink {
 					if (workspace != null)
 						((HeadlessWorkspace)workspace).dispose();
 					workspace = HeadlessWorkspace.newInstance() ;
-					workspace.open(path);
+					workspace.open(path);	
 				}
 				catch( java.io.IOException ex) {
 					JOptionPane.showMessageDialog(null, "Error in loading model:"+ex, "Error", JOptionPane.OK_CANCEL_OPTION);

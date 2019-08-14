@@ -2,9 +2,10 @@
 
 
 '''
-from __future__ import (unicode_literals, print_function, absolute_import,
-                                        division)
+
 import logging
+from multiprocessing import Process
+import os
 import sys
 
 import pyNetLogo
@@ -30,6 +31,42 @@ root.addHandler(ch)
 
 # on mac there is a stupid issue with getting the default jvm path
 # this is related to some mac bug in java 8
-jvm_home = '/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/jre/lib/server/libjvm.dylib'
-link = pyNetLogo.NetLogoLink(jvm_home=jvm_home)
-link.load_model('Wolf Sheep Predation.nlogo')
+# jvm_home = '/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/jre/lib/server/libjvm.dylib'
+# link = pyNetLogo.NetLogoLink(jvm_home=jvm_home)
+
+def run_61():
+    print("trying 6.1")
+    link = pyNetLogo.NetLogoLink() 
+    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+    print(os.path.exists(model_file))
+    link.load_model(model_file)
+
+def run_60():
+    print("trying 6.0")
+    link = pyNetLogo.NetLogoLink(netlogo_home='/Applications/Netlogo 6.0.4')
+           
+    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+    print(os.path.exists(model_file))
+    link.load_model(model_file)
+
+def run_53():
+    print("trying 5.3")
+    link = pyNetLogo.NetLogoLink(netlogo_home='/Applications/Netlogo 5.3.1')
+          
+    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+    print(os.path.exists(model_file))
+    link.load_model(model_file)
+    
+if __name__ == '__main__':
+    p = Process(target=run_61)
+    p.start()
+    p.join()
+    
+    
+    p = Process(target=run_60)
+    p.start()
+    p.join()
+    
+    p = Process(target=run_53)
+    p.start()
+    p.join()
