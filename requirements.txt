@@ -3,7 +3,7 @@ futures
 numpy
 scipy
 pandas
-JPype1
+JPype1>=0.7
 sphinx>=1.4
 ipykernel
 nbsphinx

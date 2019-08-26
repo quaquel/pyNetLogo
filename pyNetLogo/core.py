@@ -242,7 +242,7 @@ class NetLogoLink(object):
             jvm_args = [jarpath, ] + jvmargs
 
             try:
-                jpype.startJVM(jvm_home, *jvm_args)
+                jpype.startJVM(jvm_home, convertStrings=False, *jvm_args)
             except RuntimeError as e:
                 raise e
             
@@ -302,8 +302,9 @@ class NetLogoLink(object):
 
         try:
             self.link.loadModel(path)
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def kill_workspace(self):
         """Close NetLogo and shut down the JVM.
@@ -329,8 +330,9 @@ class NetLogoLink(object):
 
         try:
             self.link.command(netlogo_command)
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def report(self, netlogo_reporter):
         """Return values from a NetLogo reporter
@@ -353,8 +355,9 @@ class NetLogoLink(object):
         try:
             result = self.link.report(netlogo_reporter)
             return self._cast_results(result)
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def report_while(self, netlogo_reporter, condition, command='go', max_seconds=0):
         """Return values from a NetLogo reporter while a condition is true
@@ -381,8 +384,9 @@ class NetLogoLink(object):
         try:
             result = self.link.doReportWhile(command, netlogo_reporter, condition, max_seconds)
             return self._cast_results(result)
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def patch_report(self, attribute):
         """Return patch attributes from NetLogo
@@ -429,8 +433,9 @@ class NetLogoLink(object):
 
             return results_df
 
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def patch_set(self, attribute, data):
         """Set patch attributes in NetLogo
@@ -469,8 +474,9 @@ class NetLogoLink(object):
 
             self.link.command(command)
 
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def repeat_command(self, netlogo_command, reps):
         """Execute the supplied command in NetLogo a given number of times
@@ -492,8 +498,9 @@ class NetLogoLink(object):
         try:
             commandstr = 'repeat {0} [{1}]'.format(reps, netlogo_command)
             self.link.command(commandstr)
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def repeat_report(self, netlogo_reporter, reps, go='go'):
         """Return values from a NetLogo reporter over a number of ticks.
@@ -671,8 +678,9 @@ class NetLogoLink(object):
 
             self.link.command(commandstr)
 
-        except jpype.JavaException as ex:
-            raise NetLogoException(ex.message())
+        except jpype.JException as ex:
+            print(ex.stacktrace())
+            raise NetLogoException(str(ex))
 
     def _cast_results(self, results):
         """Convert results to the proper python data type. The NLResults
@@ -703,7 +711,7 @@ def type_convert(results):
     '''Helper function for converting from Java datatypes to
     Python datatypes'''
 
-    java_dtype = results.type
+    java_dtype = str(results.getType())
 
     if java_dtype == "Boolean":
         results = results.getResultAsBoolean()
