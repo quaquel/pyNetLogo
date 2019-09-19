@@ -422,12 +422,13 @@ class NetLogoLink(object):
                                       columns=range(extents[0],
                                                     extents[1]+1, 1))
             results_df.sort_index(ascending=False, inplace=True)
-            if self.netlogo_version == '6':
-                resultsvec = self.link.report('map [p -> [{0}] of p] \
-                                               sort patches'.format(attribute))
-            else:
+
+            if self.netlogo_version == '5':
                 resultsvec = self.link.report('map [[{0}] of ?] \
                                                sort patches'.format(attribute))
+            else:
+                resultsvec = self.link.report('map [p -> [{0}] of p] \
+                                               sort patches'.format(attribute))    
             resultsvec = self._cast_results(resultsvec)
             results_df.ix[:, :] = resultsvec.reshape(results_df.shape)
 
@@ -461,16 +462,16 @@ class NetLogoLink(object):
             np.set_printoptions(threshold=np.prod(data.shape))
             datalist = '['+str(data.values.flatten()).strip('[ ')
             datalist = ' '.join(datalist.split())
-            if self.netlogo_version == '6':
-                command = '(foreach map [px -> [pxcor] of px] \
-                            sort patches map [py -> [pycor] of py] \
-                            sort patches {0} [[px py p ] -> ask patch px py \
-                            [set {1} p]])'.format(datalist, attribute)
-            else:
+            if self.netlogo_version == '5':
                 command = '(foreach map [[pxcor] of ?] \
                             sort patches map [[pycor] of ?] \
                             sort patches {0} [ask patch ?1 ?2 \
                             [set {1} ?3]])'.format(datalist, attribute)
+            else:
+                command = '(foreach map [px -> [pxcor] of px] \
+                            sort patches map [py -> [pycor] of py] \
+                            sort patches {0} [[px py p ] -> ask patch px py \
+                            [set {1} p]])'.format(datalist, attribute)
 
             self.link.command(command)
 
@@ -660,20 +661,19 @@ class NetLogoLink(object):
             askstr = ''.join(askstr)
             setstr = ''.join(setstr)
 
-            if self.netlogo_version == '6':
+            if self.netlogo_version == '5':
+                commandstr = ['(foreach [{0}] {1} \
+                               [ask {2} ?1 [{3}]])'.format(whostr,
+                                                           attribstr,
+                                                           agent_name,
+                                                           setstr)]
+            else:
                 commandstr = ['(foreach [{0}] {1} [ [?1 {2}] \
                                -> ask {3} ?1 [{4}]])'.format(whostr,
                                                              attribstr,
                                                              askstr,
                                                              agent_name,
                                                              setstr)]
-            elif self.netlogo_version == '5':
-                commandstr = ['(foreach [{0}] {1} \
-                               [ask {2} ?1 [{3}]])'.format(whostr,
-                                                           attribstr,
-                                                           agent_name,
-                                                           setstr)]
-
             commandstr = ''.join(commandstr)
 
             self.link.command(commandstr)
