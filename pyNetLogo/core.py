@@ -149,6 +149,8 @@ def find_netlogo_mac():
             netlogo = find_netlogo(path)
         except IndexError:
             pass
+        except OSError:
+            pass
         else:
             netlogo = os.path.join(path, netlogo)
 
