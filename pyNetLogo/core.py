@@ -505,7 +505,7 @@ class NetLogoLink(object):
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def repeat_report(self, netlogo_reporter, reps, go='go'):
+    def repeat_report(self, netlogo_reporter, reps, go='go', include_t0=True):
         """Return values from a NetLogo reporter over a number of ticks.
 
         Can be used with multiple reporters by passing a list of strings.
@@ -522,6 +522,9 @@ class NetLogoLink(object):
             Number of NetLogo ticks for which to return values
         go : str, optional
             NetLogo command for running the model ('go' by default)
+        include_t0 : boolean, optional
+            include the value of the reporter at t0, prior to running the 
+            go command
 
         Returns
         -------
@@ -545,8 +548,14 @@ class NetLogoLink(object):
             raise NetLogoException("Unknown datatype")
 
         tick = self._cast_results(self.link.report('ticks'))
+        
+        if include_t0:
+            index = np.arange(tick, tick+reps+1)
+        else:
+            index = np.arange(tick, tick+reps)
+        
         results_df = pd.DataFrame(columns=cols,
-                                  index=np.arange(tick, tick+reps))
+                                  index=index)
 
         prefix = ''.join([os.getcwd(), os.sep])
         tempfolder = tempfile.mkdtemp(prefix=prefix)
@@ -565,14 +574,18 @@ class NetLogoLink(object):
                                            'file-write', variable)
             commands.append(nc)
 
-        c_start = "repeat {} [".format(reps)
-        c_close = "{} ]".format(go)
-        c_middle = " ".join(commands)
+        c_start = "repeat {} [ {}".format(reps, go)
+        c_close = "] file-close-all"
+        c_write = " ".join(commands)
 
-        command = " ".join((c_start, c_middle, c_close))
+        if include_t0:
+            command = " ".join((c_write, c_start, c_write, c_close))
+        else:
+            command = " ".join((c_start, c_write, c_close))
+
 
         self.command(command)
-        self.command("file-close-all")
+
 
         for key, value in fns.items():
             with open(value) as fh:
