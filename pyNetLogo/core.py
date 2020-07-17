@@ -432,7 +432,7 @@ class NetLogoLink(object):
                 resultsvec = self.link.report('map [p -> [{0}] of p] \
                                                sort patches'.format(attribute))    
             resultsvec = self._cast_results(resultsvec)
-            results_df.ix[:, :] = resultsvec.reshape(results_df.shape)
+            results_df.iloc[:, :] = resultsvec.reshape(results_df.shape)
 
             return results_df
 
