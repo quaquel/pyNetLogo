@@ -43,7 +43,7 @@ def run_simulation(experiment):
 
 if __name__ == '__main__':
     modelfile = os.path.abspath('./models/Wolf Sheep Predation_v6.nlogo')
-    
+
     netlogo = pyNetLogo.NetLogoLink(gui=False)
     netlogo.load_model(modelfile)
 
@@ -71,4 +71,5 @@ if __name__ == '__main__':
         experiment = {k:v for k,v in zip(problem['names'], row)}
         results = run_simulation(experiment)
         results.append(results)
-        results = pd.DataFrame(results)
+    results = pd.DataFrame(results)
+    print("end")
