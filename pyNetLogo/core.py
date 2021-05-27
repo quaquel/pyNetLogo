@@ -2,22 +2,16 @@
 
 
 """
-
-from __future__ import unicode_literals, absolute_import
+import jpype
+import numpy as np
 import os
+import pandas as pd
 import re
-import tempfile
 import string
 import sys
-
-
-from logging import DEBUG, INFO
-
-import numpy as np
-import pandas as pd
-import jpype
+import tempfile
 import warnings
-
+from logging import DEBUG, INFO
 
 __all__ = ['NetLogoLink',
            'NetLogoException']
@@ -30,7 +24,6 @@ jar_name = {'5': 'netlogolink53.jar',
             '6.1': 'netlogolink61.jar',
             '6.2': 'netlogolink61.jar'}
 
-
 class_name = {'5': 'NetLogoLinkV5.NetLogoLink',
               '6.0': 'NetLogoLinkV6.NetLogoLink',
               '6.1': 'NetLogoLinkV61.NetLogoLink',
@@ -42,6 +35,7 @@ DEFAULT_LEVEL = DEBUG
 INFO = INFO
 
 valid_chars = '[]-_.() {}{}'.format(string.ascii_letters, string.digits)
+
 
 def find_netlogo(path):
     """Find the most recent version of NetLogo in the specified directory
@@ -110,12 +104,11 @@ def establish_netlogoversion(path):
     version = match.group()
 
     main_version = version[0]
-    
+
     if main_version == '5':
         return main_version
     else:
         return version[0:3]
-
 
 
 def find_netlogo_windows():
@@ -217,8 +210,11 @@ class NetLogoLink(object):
         if netlogo_version is not None:
             assert (netlogo_home is not None)
 
-        if not netlogo_home:
+        if netlogo_home is None:
             netlogo_home = get_netlogo_home()
+
+            if netlogo_home is None:
+                warning.warn("netlogo home not found")
         if not netlogo_version:
             netlogo_version = establish_netlogoversion(netlogo_home)
         if not jvm_home:
@@ -235,9 +231,9 @@ class NetLogoLink(object):
 
         if not jpype.isJVMStarted():
             jars = find_jars(netlogo_home)
-            
+
             netlogolink_jar = jar_name[self.netlogo_version]
-            
+
             jars.append(os.path.join(PYNETLOGO_HOME,
                                      'java', netlogolink_jar))
             joined_jars = jar_sep.join(jars)
@@ -249,33 +245,32 @@ class NetLogoLink(object):
                 jpype.startJVM(jvm_home, convertStrings=False, *jvm_args)
             except RuntimeError as e:
                 raise e
-            
+
             # enable extensions
             if sys.platform == 'darwin':
                 exts = os.path.join(netlogo_home, 'extensions')
             elif sys.platform == 'win32':
-                exts = os.path.join(netlogo_home, 'app', 'extensions')        
+                exts = os.path.join(netlogo_home, 'app', 'extensions')
             else:
-                exts = os.path.join(netlogo_home, 'app', 'extensions')        
+                exts = os.path.join(netlogo_home, 'app', 'extensions')
 
             # check if default extension folder exists, raise
             # a warning otherwise
             if os.path.exists(exts):
                 jpype.java.lang.System.setProperty('netlogo.extensions.dir',
-                                               exts)
+                                                   exts)
             else:
                 warnings.warn(('could not find default NetLogo ',
                                'extensions folder. Extensions not ',
                                'available'))
-                
-            
+
             if sys.platform == 'darwin':
                 jpype.java.lang.System.setProperty('java.awt.headless',
                                                    'true')
 
             if not gui:
                 jpype.java.lang.System.setProperty('org.nlogo.preferHeadless',
-                                                    'true')
+                                                   'true')
 
         link = jpype.JClass(class_name[self.netlogo_version])
 
@@ -363,7 +358,8 @@ class NetLogoLink(object):
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def report_while(self, netlogo_reporter, condition, command='go', max_seconds=0):
+    def report_while(self, netlogo_reporter, condition, command='go',
+                     max_seconds=10):
         """Return values from a NetLogo reporter while a condition is true
         in the NetLogo model
 
@@ -384,9 +380,9 @@ class NetLogoLink(object):
             If a LogoException or CompilerException is raised by NetLogo
 
         """
-
         try:
-            result = self.link.doReportWhile(command, netlogo_reporter, condition, max_seconds)
+            result = self.link.doReportWhile(command, netlogo_reporter,
+                            condition, jpype.java.lang.Integer(max_seconds))
             return self._cast_results(result)
         except jpype.JException as ex:
             print(ex.stacktrace())
@@ -422,9 +418,9 @@ class NetLogoLink(object):
             extents = self._cast_results(extents).astype(int)
 
             results_df = pd.DataFrame(index=range(extents[2],
-                                                  extents[3]+1, 1),
+                                                  extents[3] + 1, 1),
                                       columns=range(extents[0],
-                                                    extents[1]+1, 1))
+                                                    extents[1] + 1, 1))
             results_df.sort_index(ascending=False, inplace=True)
 
             if self.netlogo_version == '5':
@@ -432,7 +428,7 @@ class NetLogoLink(object):
                                                sort patches'.format(attribute))
             else:
                 resultsvec = self.link.report('map [p -> [{0}] of p] \
-                                               sort patches'.format(attribute))    
+                                               sort patches'.format(attribute))
             resultsvec = self._cast_results(resultsvec)
             results_df.loc[:, :] = resultsvec.reshape(results_df.shape)
 
@@ -464,7 +460,7 @@ class NetLogoLink(object):
 
         try:
             np.set_printoptions(threshold=np.prod(data.shape))
-            datalist = '['+str(data.values.flatten()).strip('[ ')
+            datalist = '[' + str(data.values.flatten()).strip('[ ')
             datalist = ' '.join(datalist.split())
             if self.netlogo_version == '5':
                 command = '(foreach map [[pxcor] of ?] \
@@ -540,6 +536,15 @@ class NetLogoLink(object):
             If reporters are not in a valid format, or if a LogoException
             or CompilerException is raised by NetLogo
 
+        Notes
+        -----
+        This method relies on files to send results from netlogo back to
+        Python. This is slow and can break when used at scale. For such
+        use cases, you are better of using a model specific way of interfacing.
+        For example, have a go routine which accumulates the relevant
+        reporters into lists. First run the model for the required time steps
+        using command, and next retrieve the lists through report.
+
         """
 
         if isinstance(netlogo_reporter, str):
@@ -550,12 +555,12 @@ class NetLogoLink(object):
             raise NetLogoException("Unknown datatype")
 
         tick = self._cast_results(self.link.report('ticks'))
-        
+
         if include_t0:
-            index = np.arange(tick, tick+reps+1)
+            index = np.arange(tick, tick + reps + 1)
         else:
-            index = np.arange(tick, tick+reps)
-        
+            index = np.arange(tick, tick + reps)
+
         results_df = pd.DataFrame(columns=cols,
                                   index=index)
 
@@ -585,9 +590,7 @@ class NetLogoLink(object):
         else:
             command = " ".join((c_start, c_write, c_close))
 
-
         self.command(command)
-
 
         for key, value in fns.items():
             with open(value) as fh:
@@ -600,7 +603,8 @@ class NetLogoLink(object):
                     try:
                         # Try a numerical data type
                         result = np.array([np.array(e.split(),
-                                           dtype=np.float) for e in list_res])
+                                                    dtype=np.float) for e in
+                                           list_res])
                     except:
                         # Otherwise, assume the reporter returns string values
                         result = np.array([np.array([b.strip('"')
@@ -673,8 +677,8 @@ class NetLogoLink(object):
             askstr = []
             setstr = []
             for i, attrib_name in enumerate(attribs_to_update):
-                askstr.extend(('?{0} '.format(i+2)))
-                setstr.extend(('set {0} ?{1} '.format(attrib_name, i+2)))
+                askstr.extend(('?{0} '.format(i + 2)))
+                setstr.extend(('set {0} ?{1} '.format(attrib_name, i + 2)))
             askstr = ''.join(askstr)
             setstr = ''.join(setstr)
 
@@ -716,10 +720,10 @@ class NetLogoLink(object):
 
         try:
             converted_results = type_convert(results)
-        except:
-            converted_results=[]
-            for i in results:
-                converted_results.append(type_convert(i))
+        except AttributeError:
+            converted_results = []
+            for entry in results:
+                converted_results.append(self._cast_results(entry))
 
         return converted_results
 

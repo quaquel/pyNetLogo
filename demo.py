@@ -4,13 +4,11 @@
 '''
 
 import logging
-from multiprocessing import Process
 import os
 import sys
+from multiprocessing import Process
 
 import pyNetLogo
-
-
 
 # Created on 1 Nov 2016
 #
@@ -36,37 +34,42 @@ root.addHandler(ch)
 
 def run_61():
     print("trying 6.1")
-    link = pyNetLogo.NetLogoLink() 
-    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+    link = pyNetLogo.NetLogoLink()
+    model_file = os.path.join(link.netlogo_home,
+                              'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
     print(os.path.exists(model_file))
     link.load_model(model_file)
+
 
 def run_60():
     print("trying 6.0")
     link = pyNetLogo.NetLogoLink(netlogo_home='/Applications/Netlogo 6.0.4')
-           
-    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+
+    model_file = os.path.join(link.netlogo_home,
+                              'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
     print(os.path.exists(model_file))
     link.load_model(model_file)
+
 
 def run_53():
     print("trying 5.3")
     link = pyNetLogo.NetLogoLink(netlogo_home='/Applications/Netlogo 5.3.1')
-          
-    model_file = os.path.join(link.netlogo_home, 'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
+
+    model_file = os.path.join(link.netlogo_home,
+                              'models/Sample Models/Biology/Wolf Sheep Predation.nlogo')
     print(os.path.exists(model_file))
     link.load_model(model_file)
-    
+
+
 if __name__ == '__main__':
     p = Process(target=run_61)
     p.start()
     p.join()
-    
-    
+
     p = Process(target=run_60)
     p.start()
     p.join()
-    
+
     p = Process(target=run_53)
     p.start()
     p.join()

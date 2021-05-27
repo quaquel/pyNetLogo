@@ -173,7 +173,7 @@ public class NetLogoLink {
 		 * is a wrapper around netlogo's command.
 		 * 
 		 * @param s	a valid netlogo command
-		 * @throws LogoException, ComplierException
+		 * @throws LogoException, CompilerException
 		 * 
 		 */
 		
@@ -198,6 +198,101 @@ public class NetLogoLink {
 		result.setResultValue(workspace.report(s));
 		return result;
 	}
+
+    public void sourceFromString(final String source, final Boolean addProcedure)
+	throws java.io.IOException, LogoException, CompilerException, InterruptedException
+	{
+		caughtEx = null;
+		if ( isGUIworkspace ) {
+			try {
+				EventQueue.invokeAndWait (
+					new Runnable() {
+						public void run() {
+							try
+							{
+								if (addProcedure)
+								{
+									App.app().setProcedures(App.app().getProcedures()+"\n"+source);
+								}
+								else
+								{
+									App.app().setProcedures(source);
+								}
+
+								App.app().compile();
+							}
+							catch( Exception ex)
+							{
+								//System.out.println("Error: "+ex);
+							}
+						}
+					}
+				);
+			}
+			catch( java.lang.reflect.InvocationTargetException ex ) {
+				JOptionPane.showMessageDialog(null, "Error in model from source:"+ex, "Error", JOptionPane.OK_CANCEL_OPTION);
+				throw new RuntimeException(ex.getMessage());
+			}
+			if( caughtEx != null ) {
+				throw caughtEx;
+			}
+		}
+	}
+
+	public void doCommandWhile(final String s, final String cond, Integer maxMinutes) throws LogoException, CompilerException
+	{
+		if (maxMinutes > 0) {
+			long startTime = System.currentTimeMillis();
+			while (((Boolean)workspace.report(cond)).booleanValue())
+			{
+				workspace.command(s);
+				// max. time exceeded
+				if ((System.currentTimeMillis() - startTime) / 60000 >= maxMinutes) {
+					//break;
+					throw new RuntimeException("Maximum time for NLDoCommandWhile reached. Process stopped.");
+				}
+			}
+		}
+		else {
+			while (((Boolean)workspace.report(cond)).booleanValue())
+			{
+				workspace.command(s);
+			}
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public Object[] doReportWhile(final String s, final String var, final String condition, Integer maxMinutes)
+		throws LogoException, CompilerException, Exception
+	{
+		java.util.ArrayList<Object> varList = new java.util.ArrayList<Object>();
+		if (maxMinutes > 0) {
+			long startTime = System.currentTimeMillis();
+			for(int i=0; ((Boolean)workspace.report(condition)).booleanValue(); i++) {
+				workspace.command(s);
+				varList.add(report(var));
+				// max. time exceeded
+				if ((System.currentTimeMillis() - startTime) / 60000 >= maxMinutes) {
+					//break;
+					throw new RuntimeException("Maximum time for NLDoReportWhile reached. Process stopped.");
+				}
+			}
+		}
+		else {
+			for(int i=0; ((Boolean)workspace.report(condition)).booleanValue(); i++) {
+				workspace.command(s);
+				varList.add(report(var));
+			}
+		}
+		Object[] objArray = varList.toArray();
+		return objArray;
+	}
+
+	/*
+	source from string to add procedures to netlogo
+	commandWhile
+	reportWhile
+	*/
 	
 }
 
