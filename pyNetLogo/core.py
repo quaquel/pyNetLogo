@@ -195,8 +195,8 @@ class NetLogoLink(object):
     netlogo_version : {'6','5'}, optional
         Used to choose command syntax for link methods (required on Linux)
         if this is provided, netlogo_home should be provided as well
-    jvm_home : str, optional
-        Java home directory for Jpype
+    jvm_path : str, optional
+        path of the jvm
     jvmargs : list of str, optional
               additional arguments that should be used when starting
               the jvm
@@ -204,7 +204,7 @@ class NetLogoLink(object):
     """
 
     def __init__(self, gui=False, thd=False, netlogo_home=None,
-                 netlogo_version=None, jvm_home=None,
+                 netlogo_version=None, jvm_path=None,
                  jvmargs=[]):
 
         if netlogo_version is not None:
@@ -217,12 +217,12 @@ class NetLogoLink(object):
                 warning.warn("netlogo home not found")
         if not netlogo_version:
             netlogo_version = establish_netlogoversion(netlogo_home)
-        if not jvm_home:
-            jvm_home = jpype.getDefaultJVMPath()
+        if not jvm_path:
+            jvm_path = jpype.getDefaultJVMPath()
 
         self.netlogo_home = netlogo_home
         self.netlogo_version = netlogo_version
-        self.jvm_home = jvm_home
+        self.jvm_home = jvm_path
 
         if sys.platform == 'win32':
             jar_sep = ';'
@@ -242,7 +242,7 @@ class NetLogoLink(object):
             jvm_args = [jarpath, ] + jvmargs
 
             try:
-                jpype.startJVM(jvm_home, convertStrings=False, *jvm_args)
+                jpype.startJVM(jvm_path, convertStrings=False, *jvm_args)
             except RuntimeError as e:
                 raise e
 
