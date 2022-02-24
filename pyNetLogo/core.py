@@ -260,8 +260,8 @@ class NetLogoLink(object):
                 jpype.java.lang.System.setProperty('netlogo.extensions.dir',
                                                    exts)
             else:
-                warnings.warn(('could not find default NetLogo ',
-                               'extensions folder. Extensions not ',
+                warnings.warn(('could not find default NetLogo '
+                               'extensions folder. Extensions not '
                                'available'))
 
             if sys.platform == 'darwin':
