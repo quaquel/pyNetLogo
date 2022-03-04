@@ -1,10 +1,8 @@
-'''
+"""
 Created on Dec 2, 2013
 
 @author: jhkwakkel
-'''
-from __future__ import print_function
-
+"""
 import os
 
 from pyNetLogo import NetLogoLink
