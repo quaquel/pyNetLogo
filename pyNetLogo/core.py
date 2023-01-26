@@ -603,7 +603,7 @@ class NetLogoLink(object):
                     try:
                         # Try a numerical data type
                         result = np.array([np.array(e.split(),
-                                                    dtype=np.float) for e in
+                                                    dtype=float) for e in
                                            list_res])
                     except:
                         # Otherwise, assume the reporter returns string values
