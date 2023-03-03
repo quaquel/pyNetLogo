@@ -22,12 +22,14 @@ PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 jar_name = {'5': 'netlogolink53.jar',
             '6.0': 'netlogolink60.jar',
             '6.1': 'netlogolink61.jar',
-            '6.2': 'netlogolink61.jar'}
+            '6.2': 'netlogolink61.jar',
+            '6.3': 'netlogolink61.jar'}
 
 class_name = {'5': 'NetLogoLinkV5.NetLogoLink',
               '6.0': 'NetLogoLinkV6.NetLogoLink',
               '6.1': 'NetLogoLinkV61.NetLogoLink',
-              '6.2': 'NetLogoLinkV61.NetLogoLink'}
+              '6.2': 'NetLogoLinkV61.NetLogoLink',
+              '6.3': 'NetLogoLinkV61.NetLogoLink'}
 
 _logger = None
 LOGGER_NAME = "EMA"
