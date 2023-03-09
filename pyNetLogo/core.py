@@ -216,7 +216,7 @@ class NetLogoLink(object):
             netlogo_home = get_netlogo_home()
 
             if netlogo_home is None:
-                warning.warn("netlogo home not found")
+                warnings.warn("netlogo home not found")
         if not netlogo_version:
             netlogo_version = establish_netlogoversion(netlogo_home)
         if not jvm_path:
