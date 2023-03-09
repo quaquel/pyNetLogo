@@ -18,7 +18,7 @@ classifiers=[
 ]
 dependencies = [
     "pandas",
-    "jpype-1"
+    "jpype1"
 ]
 dynamic = ["version"] # Version is read from pyNetLogo/__init__.py
 
