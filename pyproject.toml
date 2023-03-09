@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=63.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyNetLogo"
+authors = [
+  { name="Jan Kwakkel", email="j.h.kwakkel@tudelft.nl" },
+]
+description = "python link for dynamic interaction with NetLogo"
+readme = "README.md"
+license = { file="LICENSE.md" }
+requires-python = ">=3.8"
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pandas",
+    "jpype1"
+]
+dynamic = ["version"] # Version is read from pyNetLogo/__init__.py
+
+[project.urls]
+"Homepage" = "https://github.com/quaquel/pyNetLogo"
+"Documentation" = "https://pyNetLogo.readthedocs.io"
+"Bug Tracker" = "https://github.com/quaquel/pyNetLogo/issues"
+
+[tool.black]
+line-length = 100
+
+[tool.setuptools.dynamic]
+version = {attr = "pynetlogo.__version__"}
+
+[tool.setuptools.package-data]
+"pyNetLogo.java" = ["**"]
