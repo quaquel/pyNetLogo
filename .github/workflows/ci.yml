@@ -39,10 +39,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install .[dev,cov]
         wget https://ccl.northwestern.edu/netlogo/6.3.0/NetLogo-6.3.0-64.tgz
         tar -xzf NetLogo-6.3.0-64.tgz
-
 
   lint:
     runs-on: ubuntu-latest
