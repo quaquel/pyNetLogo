@@ -10,7 +10,7 @@ import os
 import pandas as pd
 from SALib.sample import saltelli
 
-from src import pyNetLogo
+from src import pynetlogo
 
 
 def run_simulation(experiment):
@@ -45,7 +45,7 @@ def run_simulation(experiment):
 if __name__ == '__main__':
     modelfile = os.path.abspath('./models/Wolf Sheep Predation_v6.nlogo')
 
-    netlogo = pyNetLogo.NetLogoLink(gui=False)
+    netlogo = pynetlogo.NetLogoLink(gui=False)
     netlogo.load_model(modelfile)
 
     problem = {

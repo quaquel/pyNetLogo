@@ -12,35 +12,35 @@ try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from src import pyNetLogo as pyNetLogo
+from src import pynetlogo as pyNetLogo
 
 
 class Test(unittest.TestCase):
 
-    @mock.patch('pyNetLogo.pyNetLogo.os')
+    @mock.patch('pynetlogo.pynetlogo.os')
     def test_find_netlogo(self, mocked_os):
         mocked_os.path.abspath.return_value = '/Applications'
         mocked_os.listdir.return_value = ['Netlogo 5.1.1', 'Netlogo 5.3.0',
                                           'Netlogo 6.0', 'Netlogo 6.1']
 
-        version = pyNetLogo.find_netlogo('/Applications')
+        version = pynetlogo.find_netlogo('/Applications')
         self.assertEqual(version, 'Netlogo 6.0')
 
         mocked_os.listdir.return_value = ['Netlogo 5.1.1', 'Netlogo 5.3']
 
-        version = pyNetLogo.find_netlogo('/Applications')
+        version = pynetlogo.find_netlogo('/Applications')
         self.assertEqual(version, 'Netlogo 5.3')
 
         mocked_os.listdir.return_value = []
         with self.assertRaises(IndexError):
-            pyNetLogo.find_netlogo('/Applications')
+            pynetlogo.find_netlogo('/Applications')
 
     def testNetlogoLink(self):
         pass
-        #         link = pyNetLogo.NetLogoLink(True, False)
-        #         link = pyNetLogo.NetLogoLink(True, True)
-        #         link = pyNetLogo.NetLogoLink(False, False)
-        #         link = pyNetLogo.NetLogoLink(False, True)
+        #         link = pynetlogo.NetLogoLink(True, False)
+        #         link = pynetlogo.NetLogoLink(True, True)
+        #         link = pynetlogo.NetLogoLink(False, False)
+        #         link = pynetlogo.NetLogoLink(False, True)
         pass
 
     #     def test_load_model(self):

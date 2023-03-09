@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pyNetLogo documentation build configuration file, created by
+# pynetlogo documentation build configuration file, created by
 # sphinx-quickstart on Sat Mar 23 14:18:16 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -47,7 +47,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyNetLogo'
+project = u'pynetlogo'
 copyright = u'2017, J.H. Kwakkel and M. Jaxa-Rozen'
 
 
@@ -56,9 +56,9 @@ copyright = u'2017, J.H. Kwakkel and M. Jaxa-Rozen'
 # built documents.
 #
 def establish_version():
-    from src import pyNetLogo
+    from src import pynetlogo
 
-    version_info = pyNetLogo.__version__
+    version_info = pynetlogo.__version__
     version_match = re.search(r'^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)',
                               version_info)
 
@@ -122,10 +122,10 @@ html_theme = "sphinx_rtd_theme"
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "pyNetLogo"
+html_title = "pynetlogo"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = "pyNetLogo"
+html_short_title = "pynetlogo"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -201,7 +201,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'pyNetLogo.tex', u'pyNetLogo Documentation',
+    ('index', 'pynetlogo.tex', u'pynetlogo Documentation',
      u'J.H. Kwakkel', 'manual'),
 ]
 
@@ -231,7 +231,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pynetlogo', u'pyNetLogo Documentation',
+    ('index', 'pynetlogo', u'pynetlogo Documentation',
      [u'J.H. Kwakkel'], 1)
 ]
 
@@ -245,8 +245,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'pyNetLogo', u'pyNetLogo Documentation',
-     u'J.H. Kwakkel', 'pyNetLogo', 'One line description of project.',
+    ('index', 'pynetlogo', u'pynetlogo Documentation',
+     u'J.H. Kwakkel', 'pynetlogo', 'One line description of project.',
      'Miscellaneous'),
 ]
 

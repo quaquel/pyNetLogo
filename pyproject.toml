@@ -3,7 +3,7 @@ requires = ["setuptools>=63.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyNetLogo"
+name = "pynetlogo"
 authors = [
   { name="Jan Kwakkel", email="j.h.kwakkel@tudelft.nl" },
 ]
@@ -21,12 +21,12 @@ dependencies = [
     "numpy",
     "jpype1"
 ]
-dynamic = ["version"] # Version is read from pyNetLogo/__init__.py
+dynamic = ["version"] # Version is read from pynetlogo/__init__.py
 
 [project.urls]
 "Homepage" = "https://github.com/quaquel/pyNetLogo"
-"Documentation" = "https://pyNetLogo.readthedocs.io"
-"Bug Tracker" = "https://github.com/quaquel/pyNetLogo/issues"
+"Documentation" = "https://pynetlogo.readthedocs.io"
+"Bug Tracker" = "https://github.com/quaquel/pynetlogo/issues"
 
 [tool.black]
 line-length = 100
@@ -35,4 +35,4 @@ line-length = 100
 version = {attr = "pynetlogo.__version__"}
 
 [tool.setuptools.package-data]
-"pyNetLogo.java" = ["**"]
+"pynetlogo.java" = ["**"]

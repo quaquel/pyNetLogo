@@ -3,7 +3,7 @@ import pandas as pd
 from SALib.sample import saltelli
 from multiprocessing import Pool
 
-from src import pyNetLogo
+from src import pynetlogo
 
 
 def initializer(modelfile):
@@ -20,7 +20,7 @@ def initializer(modelfile):
     # use it
     global netlogo
 
-    netlogo = pyNetLogo.NetLogoLink(gui=False)
+    netlogo = pynetlogo.NetLogoLink(gui=False)
     netlogo.load_model(modelfile)
 
 

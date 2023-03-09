@@ -5,7 +5,7 @@ Created on Dec 2, 2013
 """
 import os
 
-from src.pyNetLogo import NetLogoLink
+from src.pynetlogo import NetLogoLink
 
 link = NetLogoLink()
 
