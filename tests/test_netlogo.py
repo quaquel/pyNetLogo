@@ -1,39 +1,39 @@
-'''
+"""
 Created on 23 mrt. 2013
 
 @author: localadmin
-'''
-from __future__ import (absolute_import, unicode_literals, print_function,
-                        division)
-
+"""
 import unittest
 
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from src import pynetlogo as pyNetLogo
+from src import pynetlogo
 
 
 class Test(unittest.TestCase):
-
-    @mock.patch('pynetlogo.pynetlogo.os')
+    @mock.patch("pynetlogo.pynetlogo.os")
     def test_find_netlogo(self, mocked_os):
-        mocked_os.path.abspath.return_value = '/Applications'
-        mocked_os.listdir.return_value = ['Netlogo 5.1.1', 'Netlogo 5.3.0',
-                                          'Netlogo 6.0', 'Netlogo 6.1']
+        mocked_os.path.abspath.return_value = "/Applications"
+        mocked_os.listdir.return_value = [
+            "Netlogo 5.1.1",
+            "Netlogo 5.3.0",
+            "Netlogo 6.0",
+            "Netlogo 6.1",
+        ]
 
-        version = pynetlogo.find_netlogo('/Applications')
-        self.assertEqual(version, 'Netlogo 6.0')
+        version = pynetlogo.find_netlogo("/Applications")
+        self.assertEqual(version, "Netlogo 6.0")
 
-        mocked_os.listdir.return_value = ['Netlogo 5.1.1', 'Netlogo 5.3']
+        mocked_os.listdir.return_value = ["Netlogo 5.1.1", "Netlogo 5.3"]
 
-        version = pynetlogo.find_netlogo('/Applications')
-        self.assertEqual(version, 'Netlogo 5.3')
+        version = pynetlogo.find_netlogo("/Applications")
+        self.assertEqual(version, "Netlogo 5.3")
 
         mocked_os.listdir.return_value = []
         with self.assertRaises(IndexError):
-            pynetlogo.find_netlogo('/Applications')
+            pynetlogo.find_netlogo("/Applications")
 
     def testNetlogoLink(self):
         pass
