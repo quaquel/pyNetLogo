@@ -3,7 +3,7 @@ import pandas as pd
 from SALib.sample import saltelli
 from multiprocessing import Pool
 
-import pyNetLogo
+from src import pyNetLogo
 
 
 def initializer(modelfile):

@@ -10,7 +10,7 @@ import os
 import pandas as pd
 from SALib.sample import saltelli
 
-import pyNetLogo
+from src import pyNetLogo
 
 
 def run_simulation(experiment):

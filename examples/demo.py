@@ -8,7 +8,7 @@ import os
 import sys
 from multiprocessing import Process
 
-import pyNetLogo
+from src import pyNetLogo
 
 # Created on 1 Nov 2016
 #

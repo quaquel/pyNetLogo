@@ -56,7 +56,7 @@ copyright = u'2017, J.H. Kwakkel and M. Jaxa-Rozen'
 # built documents.
 #
 def establish_version():
-    import pyNetLogo
+    from src import pyNetLogo
 
     version_info = pyNetLogo.__version__
     version_match = re.search(r'^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)',
