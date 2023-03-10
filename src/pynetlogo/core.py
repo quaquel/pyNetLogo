@@ -23,7 +23,7 @@ jar_name = {
     "6.0": "netlogolink60.jar",
     "6.1": "netlogolink61.jar",
     "6.2": "netlogolink61.jar",
-    "6.3": "netlogolink61.jar",
+    "6.3": "netlogolink63.jar",
 }
 
 class_name = {
@@ -31,7 +31,7 @@ class_name = {
     "6.0": "NetLogoLinkV6.NetLogoLink",
     "6.1": "NetLogoLinkV61.NetLogoLink",
     "6.2": "NetLogoLinkV61.NetLogoLink",
-    "6.3": "NetLogoLinkV61.NetLogoLink",
+    "6.3": "NetLogoLinkV63.NetLogoLink",
 }
 
 _logger = None

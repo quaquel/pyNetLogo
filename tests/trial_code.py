@@ -7,7 +7,9 @@ import os
 
 from src.pynetlogo import NetLogoLink
 
-link = NetLogoLink()
+jvm_path = "/Users/jhkwakkel/Downloads/jdk-19.0.2.jdk/Contents/MacOS/libjli.dylib"
+
+link = NetLogoLink(jvm_path=jvm_path)
 
 print("netlogo link instantiated")
 print(link.netlogo_home)
