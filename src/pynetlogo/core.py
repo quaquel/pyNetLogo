@@ -17,9 +17,8 @@ __all__ = ["NetLogoLink", "NetLogoException"]
 
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
-# Jar supports NetLogo 5.x, 6.0, or 6.1
+# Jar supports NetLogo 6.0, or newer
 jar_name = {
-    "5": "netlogolink53.jar",
     "6.0": "netlogolink60.jar",
     "6.1": "netlogolink61.jar",
     "6.2": "netlogolink61.jar",
@@ -27,7 +26,6 @@ jar_name = {
 }
 
 class_name = {
-    "5": "NetLogoLinkV5.NetLogoLink",
     "6.0": "NetLogoLinkV6.NetLogoLink",
     "6.1": "NetLogoLinkV61.NetLogoLink",
     "6.2": "NetLogoLinkV61.NetLogoLink",
@@ -107,12 +105,7 @@ def establish_netlogoversion(path):
     match = pattern.search(netlogo)
     version = match.group()
 
-    main_version = version[0]
-
-    if main_version == "5":
-        return main_version
-    else:
-        return version[0:3]
+    return version[0:3]
 
 
 def find_netlogo_windows():
@@ -193,7 +186,7 @@ class NetLogoLink(object):
         If true, use NetLogo 3D
     netlogo_home : str, optional
         Path to the NetLogo installation directory (required on Linux)
-    netlogo_version : {'6','5'}, optional
+    netlogo_version : str, optional
         Used to choose command syntax for link methods (required on Linux)
         if this is provided, netlogo_home should be provided as well
     jvm_path : str, optional
@@ -469,20 +462,13 @@ class NetLogoLink(object):
             np.set_printoptions(threshold=np.prod(data.shape))
             datalist = "[" + str(data.values.flatten()).strip("[ ")
             datalist = " ".join(datalist.split())
-            if self.netlogo_version == "5":
-                command = "(foreach map [[pxcor] of ?] \
-                            sort patches map [[pycor] of ?] \
-                            sort patches {0} [ask patch ?1 ?2 \
-                            [set {1} ?3]])".format(
-                    datalist, attribute
-                )
-            else:
-                command = "(foreach map [px -> [pxcor] of px] \
-                            sort patches map [py -> [pycor] of py] \
-                            sort patches {0} [[px py p ] -> ask patch px py \
-                            [set {1} p]])".format(
-                    datalist, attribute
-                )
+
+            command = "(foreach map [px -> [pxcor] of px] \
+                        sort patches map [py -> [pycor] of py] \
+                        sort patches {0} [[px py p ] -> ask patch px py \
+                        [set {1} p]])".format(
+                datalist, attribute
+            )
 
             self.link.command(command)
 
@@ -683,20 +669,13 @@ class NetLogoLink(object):
             askstr = "".join(askstr)
             setstr = "".join(setstr)
 
-            if self.netlogo_version == "5":
-                commandstr = [
-                    "(foreach [{0}] {1} \
-                               [ask {2} ?1 [{3}]])".format(
-                        whostr, attribstr, agent_name, setstr
-                    )
-                ]
-            else:
-                commandstr = [
-                    "(foreach [{0}] {1} [ [?1 {2}] \
-                               -> ask {3} ?1 [{4}]])".format(
-                        whostr, attribstr, askstr, agent_name, setstr
-                    )
-                ]
+
+            commandstr = [
+                "(foreach [{0}] {1} [ [?1 {2}] \
+                           -> ask {3} ?1 [{4}]])".format(
+                    whostr, attribstr, askstr, agent_name, setstr
+                )
+            ]
             commandstr = "".join(commandstr)
 
             self.link.command(commandstr)
