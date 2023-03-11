@@ -255,6 +255,8 @@ class NetLogoLink(object):
                 raise e
 
             # enable extensions
+            # TODO check path on windows/linux for 6.1 and 6.2
+            # TODO on 6.3 the intermediate app directory seems to have been dropped
             if sys.platform == "darwin":
                 exts = os.path.join(netlogo_home, "extensions")
             elif sys.platform == "win32":
@@ -424,29 +426,18 @@ class NetLogoLink(object):
                                          min-pycor max-pycor)"
             )
             extents = self._cast_results(extents).astype(int)
+            shape = (extents[3] - extents[2] + 1, extents[1] - extents[0] + 1)
 
-            results_df = pd.DataFrame(
-                index=range(extents[2], extents[3] + 1, 1),
-                columns=range(extents[0], extents[1] + 1, 1),
+            resultsvec = self.link.report(
+                "map [p -> [{0}] of p] \
+                                           sort patches".format(
+                    attribute
+                )
             )
-            results_df.sort_index(ascending=False, inplace=True)
-
-            if self.netlogo_version == "5":
-                resultsvec = self.link.report(
-                    "map [[{0}] of ?] \
-                                               sort patches".format(
-                        attribute
-                    )
-                )
-            else:
-                resultsvec = self.link.report(
-                    "map [p -> [{0}] of p] \
-                                               sort patches".format(
-                        attribute
-                    )
-                )
             resultsvec = self._cast_results(resultsvec)
-            results_df.loc[:, :] = resultsvec.reshape(results_df.shape)
+            results_df = pd.DataFrame(resultsvec.reshape(shape),
+                                      index=reversed(range(extents[2], extents[3] + 1, 1)),
+                                      columns=range(extents[0], extents[1] + 1, 1), )
 
             return results_df
 
