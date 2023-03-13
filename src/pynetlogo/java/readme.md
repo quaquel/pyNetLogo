@@ -6,4 +6,4 @@ pynetlogo uses the jar file suitable for the specified/identified version of
 netlogo.
 
 
-jar cf netlogolink63.jar *
+jar cfv netlogolink63.jar *
