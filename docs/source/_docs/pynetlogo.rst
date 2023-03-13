@@ -2,5 +2,5 @@
 :mod:`core`
 ****************
 
-.. automodule:: pyNetLogo.core
+.. automodule:: pynetlogo.core
    :members:
