@@ -23,6 +23,9 @@ dependencies = [
 ]
 dynamic = ["version"] # Version is read from pynetlogo/__init__.py
 
+[project.optional-dependencies]
+docs = ["sphinx", "nbsphinx", "myst", "pyscaffold", "myst-parser"]
+
 [project.urls]
 "Homepage" = "https://github.com/quaquel/pyNetLogo"
 "Documentation" = "https://pynetlogo.readthedocs.io"

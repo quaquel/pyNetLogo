@@ -170,7 +170,7 @@ class NetLogoException(Exception):
     pass
 
 
-class NetLogoLink(object):
+class NetLogoLink:
     """Create a link with NetLogo. Underneath, the NetLogo JVM
     is started through Jpype.
 
