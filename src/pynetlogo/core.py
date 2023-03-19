@@ -165,7 +165,7 @@ def get_netlogo_home():
 
 
 class NetLogoException(Exception):
-    """Basic project exception"""
+    """Base project exception"""
 
     pass
 
@@ -561,6 +561,7 @@ class NetLogoLink:
         tempfolder = tempfile.mkdtemp(prefix=prefix)
 
         # TODO move to tempfile and keep track of variable tempfile mapping
+        # TODO issue #55
         commands = []
         fns = {}
         for variable in cols:

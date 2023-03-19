@@ -3,12 +3,12 @@ Changelog
 
 Version 0.5
 -----------
-support for netlogo 6.3
-dropped support for netlogo 5.x
-renamed library from pyNetLogo to pynetlogo to abide with pep8 naming conventions
-minor changes in names of keyword arguments of various methods
-shift from setup.py to pyproject.toml
-removal of python 2 support
+- support for netlogo 6.3
+- dropped support for netlogo 5.x
+- renamed library from pyNetLogo to pynetlogo to abide with pep8 naming conventions
+- minor changes in names of keyword arguments of various methods
+- shift from setup.py to pyproject.toml
+- removal of python 2 support
 
 Version 0.4
 -----------

@@ -25,7 +25,7 @@ described in the module documentation.
 Known bugs and limitations
 --------------------------
 -	On a Mac, only headless mode (without GUI) is supported.
--	pyNetLogo can be used to control NetLogo from within Python. Calling Python
+-	pynetlogo can be used to control NetLogo from within Python. Calling Python
 	from within NetLogo is not supported by this library. However, this can be achieved
 	using the `Python extension for NetLogo <https://github.com/qiemem/PythonExtension>`_.
 -	See `jpype limitations <https://jpype.readthedocs.io/en/latest/install.html#known-bugs-limitations>`_
