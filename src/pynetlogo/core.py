@@ -198,13 +198,13 @@ class NetLogoLink:
     """
 
     def __init__(
-        self,
-        gui=False,
-        thd=False,
-        netlogo_home=None,
-        netlogo_version=None,
-        jvm_path=None,
-        jvmargs=[],
+            self,
+            gui=False,
+            thd=False,
+            netlogo_home=None,
+            netlogo_version=None,
+            jvm_path=None,
+            jvmargs=[],
     ):
 
         if netlogo_version is not None:
@@ -239,8 +239,8 @@ class NetLogoLink:
             jarpath = "-Djava.class.path={}".format(joined_jars)
 
             jvm_args = [
-                jarpath,
-            ] + jvmargs
+                           jarpath,
+                       ] + jvmargs
 
             try:
                 jpype.startJVM(jvm_path, convertStrings=False, *jvm_args)
@@ -523,9 +523,8 @@ class NetLogoLink:
 
         Returns
         -------
-        pandas DataFrame
-            DataFrame of reported values indexed by ticks, with columns
-            for each reporter
+       dict
+            key is the reporter, and the value is a list order by ticks
 
         Raises
         ------
@@ -558,11 +557,10 @@ class NetLogoLink:
         else:
             index = np.arange(tick, tick + reps)
 
-        results_df = pd.DataFrame(columns=cols, index=index)
-
         prefix = "".join([os.getcwd(), os.sep])
         tempfolder = tempfile.mkdtemp(prefix=prefix)
 
+        # TODO move to tempfile and keep track of variable tempfile mapping
         commands = []
         fns = {}
         for variable in cols:
@@ -585,6 +583,7 @@ class NetLogoLink:
 
         self.command(command)
 
+        results = {}
         for key, value in fns.items():
             with open(value) as fh:
                 result = fh.readline()
@@ -595,25 +594,23 @@ class NetLogoLink:
                 if list_res:
                     try:
                         # Try a numerical data type
-                        result = np.array([np.array(e.split(), dtype=float) for e in list_res])
-                    except:
+                        result = [np.array(e.split(), dtype=float) for e in list_res]
+                    except ValueError:
                         # Otherwise, assume the reporter returns string values
-                        result = np.array(
-                            [np.array([b.strip('"') for b in e.split()]) for e in list_res]
-                        )
+                        result = [np.array([b.strip('"') for b in e.split()]) for e in list_res]
                 else:
                     try:
                         result = np.array([float(entry) for entry in result.split()])
-                    except:
+                    except ValueError:
                         result = np.array([entry.strip('"') for entry in result.split()])
 
-                results_df.loc[:, key] = result
+                results[key] = result
 
             os.remove(value)
 
         os.rmdir(tempfolder)
 
-        return results_df
+        return results
 
     def write_NetLogo_attriblist(self, agent_data, agent_name):
         """Update attributes of a set of NetLogo agents from a DataFrame
@@ -668,7 +665,6 @@ class NetLogoLink:
                 setstr.extend(("set {0} ?{1} ".format(attrib_name, i + 2)))
             askstr = "".join(askstr)
             setstr = "".join(setstr)
-
 
             commandstr = [
                 "(foreach [{0}] {1} [ [?1 {2}] \
