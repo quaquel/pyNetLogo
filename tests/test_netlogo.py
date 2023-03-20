@@ -9,31 +9,31 @@ try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from src import pynetlogo
+
+import src.pynetlogo as pynetlogo
 
 
 class Test(unittest.TestCase):
-    @mock.patch("pynetlogo.pynetlogo.os")
+    @mock.patch("src.pynetlogo.core.os")
     def test_find_netlogo(self, mocked_os):
         mocked_os.path.abspath.return_value = "/Applications"
         mocked_os.listdir.return_value = [
-            "Netlogo 5.1.1",
-            "Netlogo 5.3.0",
-            "Netlogo 6.0",
             "Netlogo 6.1",
+            "Netlogo 6.2",
+            "Netlogo 6.3",
         ]
 
-        version = pynetlogo.find_netlogo("/Applications")
-        self.assertEqual(version, "Netlogo 6.0")
+        version = pynetlogo.core.find_netlogo("/Applications")
+        self.assertEqual(version, "Netlogo 6.3")
 
-        mocked_os.listdir.return_value = ["Netlogo 5.1.1", "Netlogo 5.3"]
+        mocked_os.listdir.return_value = ["Netlogo 6.1", "Netlogo 6.2"]
 
-        version = pynetlogo.find_netlogo("/Applications")
-        self.assertEqual(version, "Netlogo 5.3")
+        version = pynetlogo.core.find_netlogo("/Applications")
+        self.assertEqual(version, "Netlogo 6.2")
 
         mocked_os.listdir.return_value = []
         with self.assertRaises(IndexError):
-            pynetlogo.find_netlogo("/Applications")
+            pynetlogo.core.find_netlogo("/Applications")
 
     def testNetlogoLink(self):
         pass
