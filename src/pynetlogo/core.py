@@ -248,18 +248,14 @@ class NetLogoLink:
                 raise e
 
             # enable extensions
-            # TODO check path on windows/linux for 6.1 and 6.2
-            # TODO on 6.3 the intermediate app directory seems to have been dropped
-            if sys.platform == "darwin":
-                exts = os.path.join(netlogo_home, "extensions")
-            elif sys.platform == "win32":
-                exts = os.path.join(netlogo_home, "app", "extensions")
-            else:
-                exts = os.path.join(netlogo_home, "app", "extensions")
+            exts = None
+            for path, dirs, files in os.walk(self.netlogo_home):
+                if "extensions" in dirs:
+                    exts = os.path.join(self.netlogo_home, "extensions")
+                    break
 
-            # check if default extension folder exists, raise
-            # a warning otherwise
-            if os.path.exists(exts):
+            # check if extension folder was found
+            if exts:
                 jpype.java.lang.System.setProperty("netlogo.extensions.dir", exts)
             else:
                 warnings.warn(
