@@ -9,9 +9,9 @@ pyNetLogo documentation
 Interface to use and access `NetLogo <https://ccl.northwestern.edu/netlogo/>`_ (Wilensky 1999) from Python. 
 One can interact with NetLogo in either headless (no GUI) or interactive GUI 
 mode. The library provides functions to load models, execute commands, and 
-get values from reporters. It is compatible with NetLogo 6.0 and newer.
-It is largely similar to the 'NetLogo (deprecated)' `Mathematica Link <https://github.com/NetLogo/Mathematica-Link>`_
-and `RNetLogo <https://cran.r-project.org/web/packages/RNetLogo/index.html>`_.
+get values from reporters. It is compatible with NetLogo 6.1 and newer.
+It is largely similar to the `NetLogo Mathematica Link <https://github.com/NetLogo/Mathematica-Link>`_
+and `RNetLogo (deprecated) <https://cran.r-project.org/web/packages/RNetLogo/index.html>`_.
 
 
 Documentation

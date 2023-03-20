@@ -8,7 +8,7 @@ An interface to access [NetLogo](https://ccl.northwestern.edu/netlogo/) from
 Python. The interface offers methods for executing commands and returning
 values from reporters. It can be used with the NetLogo graphical user
 interface, or without (i.e., in headless mode). pynetlogo is compatible with 
-NetLogo 6.x and supports NetLogo extensions.
+NetLogo 6.1 and newer and supports NetLogo extensions.
 
 **Documentation:** http://pynetlogo.readthedocs.io/en/latest/
 

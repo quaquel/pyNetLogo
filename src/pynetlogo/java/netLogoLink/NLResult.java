@@ -1,4 +1,4 @@
-package NetLogoLinkV6;
+package netLogoLink;
 
 import java.util.LinkedHashMap;
 import java.text.ParseException;

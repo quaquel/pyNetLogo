@@ -3,6 +3,7 @@
 
 """
 import jpype
+import jpype.imports
 import numpy as np
 import os
 import pandas as pd
@@ -17,20 +18,6 @@ __all__ = ["NetLogoLink", "NetLogoException"]
 
 PYNETLOGO_HOME = os.path.dirname(os.path.abspath(__file__))
 
-# Jar supports NetLogo 6.0, or newer
-jar_name = {
-    "6.0": "netlogolink60.jar",
-    "6.1": "netlogolink61.jar",
-    "6.2": "netlogolink61.jar",
-    "6.3": "netlogolink63.jar",
-}
-
-class_name = {
-    "6.0": "NetLogoLinkV6.NetLogoLink",
-    "6.1": "NetLogoLinkV61.NetLogoLink",
-    "6.2": "NetLogoLinkV61.NetLogoLink",
-    "6.3": "NetLogoLinkV63.NetLogoLink",
-}
 
 _logger = None
 LOGGER_NAME = "EMA"
@@ -95,17 +82,6 @@ def find_jars(path):
                 jars.append(os.path.join(root, file))
 
     return jars
-
-
-def establish_netlogoversion(path):
-    # TODO: python3 compliance
-    pattern = re.compile(r"(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$")
-
-    netlogo = os.path.basename(os.path.normpath(path))
-    match = pattern.search(netlogo)
-    version = match.group()
-
-    return version[0:3]
 
 
 def find_netlogo_windows():
@@ -186,9 +162,6 @@ class NetLogoLink:
         If true, use NetLogo 3D
     netlogo_home : str, optional
         Path to the NetLogo installation directory (required on Linux)
-    netlogo_version : str, optional
-        Used to choose command syntax for link methods (required on Linux)
-        if this is provided, netlogo_home should be provided as well
     jvm_path : str, optional
         path of the jvm
     jvmargs : list of str, optional
@@ -198,86 +171,57 @@ class NetLogoLink:
     """
 
     def __init__(
-            self,
-            gui=False,
-            thd=False,
-            netlogo_home=None,
-            netlogo_version=None,
-            jvm_path=None,
-            jvmargs=[],
+        self,
+        gui=False,
+        thd=False,
+        netlogo_home=None,
+        jvm_path=None,
+        jvmargs=[],
     ):
-
-        if netlogo_version is not None:
-            assert netlogo_home is not None
 
         if netlogo_home is None:
             netlogo_home = get_netlogo_home()
 
             if netlogo_home is None:
                 warnings.warn("netlogo home not found")
-        if not netlogo_version:
-            netlogo_version = establish_netlogoversion(netlogo_home)
         if not jvm_path:
             jvm_path = jpype.getDefaultJVMPath()
 
         self.netlogo_home = netlogo_home
-        self.netlogo_version = netlogo_version
         self.jvm_home = jvm_path
-
-        if sys.platform == "win32":
-            jar_sep = ";"
-        else:
-            jar_sep = ":"
 
         if not jpype.isJVMStarted():
             jars = find_jars(netlogo_home)
-
-            netlogolink_jar = jar_name[self.netlogo_version]
-
-            jars.append(os.path.join(PYNETLOGO_HOME, "java", netlogolink_jar))
-            joined_jars = jar_sep.join(jars)
-            jarpath = "-Djava.class.path={}".format(joined_jars)
-
-            jvm_args = [
-                           jarpath,
-                       ] + jvmargs
+            jars.append(os.path.join(PYNETLOGO_HOME, "java", "netlogolink.jar"))
 
             try:
-                jpype.startJVM(jvm_path, convertStrings=False, *jvm_args)
+                jpype.startJVM(*jvmargs, jvmpath=jvm_path, classpath=jars)
             except RuntimeError as e:
                 raise e
 
-            # enable extensions
-            exts = None
-            for path, dirs, files in os.walk(self.netlogo_home):
-                if "extensions" in dirs:
-                    exts = os.path.join(self.netlogo_home, "extensions")
-                    break
-
-            # check if extension folder was found
-            if exts:
+        # enable extensions
+        for path, dirs, files in os.walk(self.netlogo_home):
+            if "extensions" in dirs:
+                exts = os.path.join(self.netlogo_home, "extensions")
                 jpype.java.lang.System.setProperty("netlogo.extensions.dir", exts)
-            else:
-                warnings.warn(
-                    (
-                        "could not find default NetLogo "
-                        "extensions folder. Extensions not "
-                        "available"
-                    )
+                break
+        else:
+            warnings.warn(
+                (
+                    "could not find default NetLogo "
+                    "extensions folder. Extensions not "
+                    "available"
                 )
+            )
 
-            if sys.platform == "darwin":
-                jpype.java.lang.System.setProperty("java.awt.headless", "true")
-
-            if not gui:
-                jpype.java.lang.System.setProperty("org.nlogo.preferHeadless", "true")
-
-        link = jpype.JClass(class_name[self.netlogo_version])
-
-        if sys.platform == "darwin" and gui:
+        if sys.platform == "darwin":
+            jpype.java.lang.System.setProperty("java.awt.headless", "true")
             gui = False
+        if not gui:
+            jpype.java.lang.System.setProperty("org.nlogo.preferHeadless", "true")
 
-        self.link = link(jpype.java.lang.Boolean(gui), jpype.java.lang.Boolean(thd))
+        from netLogoLink import NetLogoLink
+        self.link = NetLogoLink(jpype.java.lang.Boolean(gui), jpype.java.lang.Boolean(thd))
 
     def load_model(self, path):
         """Load a NetLogo model.
@@ -378,7 +322,10 @@ class NetLogoLink:
         """
         try:
             result = self.link.doReportWhile(
-                command, netlogo_reporter, condition, jpype.java.lang.Integer(max_seconds)
+                command,
+                netlogo_reporter,
+                condition,
+                jpype.java.lang.Integer(max_seconds),
             )
             return self._cast_results(result)
         except jpype.JException as ex:
@@ -424,9 +371,11 @@ class NetLogoLink:
                 )
             )
             resultsvec = self._cast_results(resultsvec)
-            results_df = pd.DataFrame(resultsvec.reshape(shape),
-                                      index=reversed(range(extents[2], extents[3] + 1, 1)),
-                                      columns=range(extents[0], extents[1] + 1, 1), )
+            results_df = pd.DataFrame(
+                resultsvec.reshape(shape),
+                index=reversed(range(extents[2], extents[3] + 1, 1)),
+                columns=range(extents[0], extents[1] + 1, 1),
+            )
 
             return results_df
 
@@ -499,43 +448,43 @@ class NetLogoLink:
     def repeat_report(self, netlogo_reporter, reps, go="go", include_t0=True):
         """Return values from a NetLogo reporter over a number of ticks.
 
-        Can be used with multiple reporters by passing a list of strings.
-        The values of the returned DataFrame are formatted following the
-        data type returned by the reporters (numerical or string data,
-        with single or multiple values). If the reporter returns multiple
-        values, the results are converted to a numpy array.
+         Can be used with multiple reporters by passing a list of strings.
+         The values of the returned DataFrame are formatted following the
+         data type returned by the reporters (numerical or string data,
+         with single or multiple values). If the reporter returns multiple
+         values, the results are converted to a numpy array.
 
-        Parameters
-        ----------
-        netlogo_reporter : str or list of str
-            Valid NetLogo reporter(s)
-        reps : int
-            Number of NetLogo ticks for which to return values
-        go : str, optional
-            NetLogo command for running the model ('go' by default)
-        include_t0 : boolean, optional
-            include the value of the reporter at t0, prior to running the
-            go command
+         Parameters
+         ----------
+         netlogo_reporter : str or list of str
+             Valid NetLogo reporter(s)
+         reps : int
+             Number of NetLogo ticks for which to return values
+         go : str, optional
+             NetLogo command for running the model ('go' by default)
+         include_t0 : boolean, optional
+             include the value of the reporter at t0, prior to running the
+             go command
 
-        Returns
-        -------
-       dict
-            key is the reporter, and the value is a list order by ticks
+         Returns
+         -------
+        dict
+             key is the reporter, and the value is a list order by ticks
 
-        Raises
-        ------
-        NetLogoException
-            If reporters are not in a valid format, or if a LogoException
-            or CompilerException is raised by NetLogo
+         Raises
+         ------
+         NetLogoException
+             If reporters are not in a valid format, or if a LogoException
+             or CompilerException is raised by NetLogo
 
-        Notes
-        -----
-        This method relies on files to send results from netlogo back to
-        Python. This is slow and can break when used at scale. For such
-        use cases, you are better of using a model specific way of interfacing.
-        For example, have a go routine which accumulates the relevant
-        reporters into lists. First run the model for the required time steps
-        using command, and next retrieve the lists through report.
+         Notes
+         -----
+         This method relies on files to send results from netlogo back to
+         Python. This is slow and can break when used at scale. For such
+         use cases, you are better of using a model specific way of interfacing.
+         For example, have a go routine which accumulates the relevant
+         reporters into lists. First run the model for the required time steps
+         using command, and next retrieve the lists through report.
 
         """
 
