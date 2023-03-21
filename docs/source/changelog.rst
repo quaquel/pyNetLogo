@@ -4,7 +4,7 @@ Changelog
 Version 0.5
 -----------
 - support for netlogo 6.3
-- dropped support for netlogo 5.x
+- dropped support for netlogo 5.x and 6.0
 - renamed library from pyNetLogo to pynetlogo to abide with pep8 naming conventions
 - minor changes in names of keyword arguments of various methods
 - shift from setup.py to pyproject.toml
