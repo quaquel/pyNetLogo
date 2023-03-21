@@ -125,7 +125,7 @@ def find_netlogo_mac():
 
 def find_netlogo_linux():
     raise NotImplementedError(
-        ("NetLogoLink requires the netlogo_home " "and netlogo_version parameters on Linux")
+        ("NetLogoLink requires the netlogo_home on Linux")
     )
 
 
@@ -510,7 +510,7 @@ class NetLogoLink:
         commands = []
         fns = {}
         for variable in cols:
-            fn = r"{0}/{1}{2}".format(tempfolder, variable, ".txt")
+            _, fn = tempfile.mkstemp(suffix=".txt", dir=tempfolder)
             fns[variable] = fn
             fn = '"{}"'.format(fn)
             fn = fn.replace(os.sep, "/")
