@@ -509,8 +509,10 @@ class NetLogoLink:
         # TODO issue #55
         commands = []
         fns = {}
+        fhs = []
         for variable in cols:
-            _, fn = tempfile.mkstemp(suffix=".txt", dir=tempfolder)
+            fh, fn = tempfile.mkstemp(suffix=".txt", dir=tempfolder)
+            fhs.append(fh)
             fns[variable] = fn
             fn = '"{}"'.format(fn)
             fn = fn.replace(os.sep, "/")
@@ -554,6 +556,9 @@ class NetLogoLink:
 
             os.remove(value)
 
+        # cleanup temp files and folders
+        for fh in fhs:
+            os.close(fh)
         os.rmdir(tempfolder)
 
         return results
