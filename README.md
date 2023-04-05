@@ -24,3 +24,13 @@ for more details
 Jaxa-Rozen & Kwakkel (2018) PyNetLogo: Linking NetLogo with Python, Journal of
 Artificial Societies and Social Simulation, 21 (2) 4
 <http://jasss.soc.surrey.ac.uk/21/2/4.html>, DOI: 10.18564/jasss.3668
+
+
+**Releases**
+The release process has been updated starting at the 0.5 release. To create a new release, follow the following steps:
+ 1. Go to [Releases](https://github.com/quaquel/EMAworkbench/releases) in the GitHub UI and press the _Draft a new release_ button
+ 2. Set the upcoming tag in the _Choose a tag_ and _Release title_ (i.e. `2.3.0`) fields
+ 3. Open a new PR in which the version number in [ema_workbench/__init__.py](https://github.com/quaquel/EMAworkbench/blob/master/ema_workbench/__init__.py) is updated and the copied release notes are added to the [CHANGELOG.md](https://github.com/quaquel/EMAworkbench/blob/master/CHANGELOG.md).
+ 4. Once this PR is merged, go back to the _Releases_ section and Publish the draft release.
+ 5. The [release.yml](https://github.com/quaquel/EMAworkbench/blob/master/.github/workflows/release.yml) CI workflow should now automatically create and upload the package to PyPI. Check if this happened on [PyPI.org](https://pypi.org/project/ema-workbench/).
+ 6. Finally, open a new PR in which the version number in [ema_workbench/__init__.py](https://github.com/quaquel/EMAworkbench/blob/master/ema_workbench/__init__.py) is updated towards the next release (i.e. `"2.4.0-dev"`).
