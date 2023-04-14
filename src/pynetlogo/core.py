@@ -553,13 +553,15 @@ class NetLogoLink:
                         result = np.array([entry.strip('"') for entry in result.split()])
 
                 results[key] = result
-
-            os.remove(value)
-
+        
         # cleanup temp files and folders
         for fh in fhs:
-            os.close(fh)
-        os.rmdir(tempfolder)
+            os.close(fh) #free up file handle for re-use
+
+        for key, value in fns.items():
+             os.remove(value) #delete file by name
+
+        os.rmdir(tempfolder) #remove folder
 
         return results
 
