@@ -503,7 +503,7 @@ class NetLogoLink:
             raise NetLogoException("Unknown datatype")
 
         # tick = self._cast_results(self.link.report("ticks"))
-        # 
+        #
         # if include_t0:
         #     index = np.arange(tick, tick + reps + 1)
         # else:
