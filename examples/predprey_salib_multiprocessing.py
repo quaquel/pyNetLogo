@@ -1,13 +1,14 @@
+import numpy as np
 import os
 import pandas as pd
-from SALib.sample import saltelli
+from SALib.sample import sobol
 from multiprocessing import Pool
 
 from src import pynetlogo
 
 
 def initializer(modelfile):
-    """initialize a subprocess
+    """initialize a subprocess.
 
     Parameters
     ----------
@@ -48,7 +49,7 @@ def run_simulation(experiment):
     counts = netlogo.repeat_report(["count sheep", "count wolves"], 100)
 
     results = pd.Series(
-        [counts["count sheep"].values.mean(), counts["count wolves"].values.mean()],
+        [np.mean(counts["count sheep"]), np.mean(counts["count wolves"])],
         index=["Avg. sheep", "Avg. wolves"],
     )
     return results
@@ -77,8 +78,8 @@ if __name__ == "__main__":
         ],
     }
 
-    n = 1000
-    param_values = saltelli.sample(problem, n, calc_second_order=True)
+    n = 1024
+    param_values = sobol.sample(problem, n, calc_second_order=True)
 
     # cast the param_values to a dataframe to
     # include the column labels

@@ -6,9 +6,10 @@
 #
 # .. codeauthor::  jhkwakkel
 
+import numpy as np
 import os
 import pandas as pd
-from SALib.sample import saltelli
+from SALib.sample import sobol
 
 from src import pynetlogo
 
@@ -37,7 +38,7 @@ def run_simulation(experiment):
     counts = netlogo.repeat_report(["count sheep", "count wolves"], 100)
 
     results = pd.Series(
-        [counts["count sheep"].values.mean(), counts["count wolves"].values.mean()],
+        [np.mean(counts["count sheep"]), np.mean(counts["count wolves"])],
         index=["Avg. sheep", "Avg. wolves"],
     )
     return results
@@ -69,12 +70,13 @@ if __name__ == "__main__":
         ],
     }
 
-    n = 1000
-    param_values = saltelli.sample(problem, n, calc_second_order=True)
+    n = 1024
+    param_values = sobol.sample(problem, n, calc_second_order=True)
 
+    results = []
     for row in param_values:
         experiment = {k: v for k, v in zip(problem["names"], row)}
-        results = run_simulation(experiment)
-        results.append(results)
+        result = run_simulation(experiment)
+        results.append(result)
     results = pd.DataFrame(results)
     print("end")
