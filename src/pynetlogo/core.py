@@ -1,7 +1,5 @@
-"""
+"""Core functionality for pynetlogo."""
 
-
-"""
 import jpype
 import jpype.imports
 import numpy as np
@@ -27,8 +25,8 @@ INFO = INFO
 valid_chars = "[]-_.() {}{}".format(string.ascii_letters, string.digits)
 
 
-def find_netlogo(path):
-    """Find the most recent version of NetLogo in the specified directory
+def find_netlogo(path: str):
+    """Find the most recent version of NetLogo in the specified directory.
 
     Parameters
     ----------
@@ -58,8 +56,8 @@ def find_netlogo(path):
     return netlogo_versions[0]
 
 
-def find_jars(path):
-    """Find all jar files in directory and return as list
+def find_jars(path: str):
+    """Find all jar files in directory and return as list.
 
     Parameters
     ----------
@@ -85,6 +83,8 @@ def find_jars(path):
 
 
 def find_netlogo_windows():
+    """Find netlogo on Windows."""
+
     netlogo = None
     if os.environ["PROGRAMW6432"]:
         paths = [os.environ["PROGRAMFILES(X86)"], os.environ["PROGRAMW6432"]]
@@ -108,6 +108,8 @@ def find_netlogo_windows():
 
 
 def find_netlogo_mac():
+    """Find netlogo on Mac."""
+
     paths = ["/Applications", os.path.join(os.getenv("HOME"), "Applications")]
     netlogo = None
     for path in paths:
@@ -124,12 +126,13 @@ def find_netlogo_mac():
 
 
 def find_netlogo_linux():
-    raise NotImplementedError(
-        ("NetLogoLink requires the netlogo_home on Linux")
-    )
+    """Find netlogo on Linux."""
+    raise NotImplementedError(("NetLogoLink requires the netlogo_home on Linux"))
 
 
 def get_netlogo_home():
+    """Try to find NetLogo home."""
+
     if sys.platform == "win32":
         netlogo_home = find_netlogo_windows()
     elif sys.platform == "darwin":
@@ -141,14 +144,15 @@ def get_netlogo_home():
 
 
 class NetLogoException(Exception):
-    """Base project exception"""
+    """Base project exception."""
 
     pass
 
 
 class NetLogoLink:
-    """Create a link with NetLogo. Underneath, the NetLogo JVM
-    is started through Jpype.
+    """Create a link with NetLogo.
+
+    Underneath, the NetLogo JVM is started through Jpype.
 
     If `netlogo_home`, `netlogo_version`, or `jvm_home` are not provided,
     the link will try to identify the correct parameters automatically on Mac
@@ -164,7 +168,7 @@ class NetLogoLink:
         Path to the NetLogo installation directory (required on Linux)
     jvm_path : str, optional
         path of the jvm
-    jvmargs : list of str, optional
+    jvm_args : list of str, optional
               additional arguments that should be used when starting
               the jvm
 
@@ -172,11 +176,11 @@ class NetLogoLink:
 
     def __init__(
         self,
-        gui=False,
-        thd=False,
-        netlogo_home=None,
-        jvm_path=None,
-        jvmargs=[],
+        gui: bool = False,
+        thd: bool = False,
+        netlogo_home: str | None = None,
+        jvm_path: str | None = None,
+        jvm_args: list[str] | None = None,
     ):
 
         if netlogo_home is None:
@@ -187,6 +191,9 @@ class NetLogoLink:
         if not jvm_path:
             jvm_path = jpype.getDefaultJVMPath()
 
+        if jvm_args is None:
+            jvm_args = []
+
         self.netlogo_home = netlogo_home
         self.jvm_home = jvm_path
 
@@ -195,7 +202,7 @@ class NetLogoLink:
             jars.append(os.path.join(PYNETLOGO_HOME, "java", "netlogolink.jar"))
 
             try:
-                jpype.startJVM(*jvmargs, jvmpath=jvm_path, classpath=jars)
+                jpype.startJVM(*jvm_args, jvmpath=jvm_path, classpath=jars)
             except RuntimeError as e:
                 raise e
 
@@ -207,11 +214,7 @@ class NetLogoLink:
                 break
         else:
             warnings.warn(
-                (
-                    "could not find default NetLogo "
-                    "extensions folder. Extensions not "
-                    "available"
-                )
+                ("could not find default NetLogo " "extensions folder. Extensions not " "available")
             )
 
         if sys.platform == "darwin":
@@ -221,9 +224,10 @@ class NetLogoLink:
             jpype.java.lang.System.setProperty("org.nlogo.preferHeadless", "true")
 
         from netLogoLink import NetLogoLink
+
         self.link = NetLogoLink(jpype.java.lang.Boolean(gui), jpype.java.lang.Boolean(thd))
 
-    def load_model(self, path):
+    def load_model(self, path: str):
         """Load a NetLogo model.
 
         Parameters
@@ -253,8 +257,8 @@ class NetLogoLink:
 
         self.link.killWorkspace()
 
-    def command(self, netlogo_command):
-        """Execute the supplied command in NetLogo
+    def command(self, netlogo_command: str):
+        """Execute the supplied command in NetLogo.
 
         Parameters
         ----------
@@ -274,8 +278,8 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def report(self, netlogo_reporter):
-        """Return values from a NetLogo reporter
+    def report(self, netlogo_reporter: str):
+        """Return values from a NetLogo reporter.
 
         Any reporter (command which returns a value) that can be called
         in the NetLogo Command Center can be called with this method.
@@ -299,9 +303,10 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def report_while(self, netlogo_reporter, condition, command="go", max_seconds=10):
-        """Return values from a NetLogo reporter while a condition is true
-        in the NetLogo model
+    def report_while(
+        self, netlogo_reporter: str, condition: str, command: str = "go", max_seconds: int = 10
+    ):
+        """Return values from a NetLogo reporter while a condition is true in the NetLogo model.
 
         Parameters
         ----------
@@ -332,8 +337,8 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def patch_report(self, attribute):
-        """Return patch attributes from NetLogo
+    def patch_report(self, attribute: str):
+        """Return patch attributes from NetLogo.
 
         Returns a pandas DataFrame with same dimensions as the NetLogo world,
         with column labels and row indices following pxcor and pycor patch
@@ -383,8 +388,8 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def patch_set(self, attribute, data):
-        """Set patch attributes in NetLogo
+    def patch_set(self, attribute: str, data: pd.DataFrame):
+        """Set patch attributes in NetLogo.
 
         Inverse of the `patch_report` method. Sets a patch attribute using
         values from a pandas DataFrame of same dimensions as the NetLogo world.
@@ -421,8 +426,8 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def repeat_command(self, netlogo_command, reps):
-        """Execute the supplied command in NetLogo a given number of times
+    def repeat_command(self, netlogo_command: str, reps: int):
+        """Execute the supplied command in NetLogo a given number of times.
 
         Parameters
         ----------
@@ -445,7 +450,9 @@ class NetLogoLink:
             print(ex.stacktrace())
             raise NetLogoException(str(ex))
 
-    def repeat_report(self, netlogo_reporter, reps, go="go", include_t0=True):
+    def repeat_report(
+        self, netlogo_reporter: str, reps: int, go: str = "go", include_t0: bool = True
+    ):
         """Return values from a NetLogo reporter over a number of ticks.
 
          Can be used with multiple reporters by passing a list of strings.
@@ -495,12 +502,12 @@ class NetLogoLink:
         else:
             raise NetLogoException("Unknown datatype")
 
-        tick = self._cast_results(self.link.report("ticks"))
-
-        if include_t0:
-            index = np.arange(tick, tick + reps + 1)
-        else:
-            index = np.arange(tick, tick + reps)
+        # tick = self._cast_results(self.link.report("ticks"))
+        # 
+        # if include_t0:
+        #     index = np.arange(tick, tick + reps + 1)
+        # else:
+        #     index = np.arange(tick, tick + reps)
 
         prefix = "".join([os.getcwd(), os.sep])
         tempfolder = tempfile.mkdtemp(prefix=prefix)
@@ -511,7 +518,7 @@ class NetLogoLink:
         fns = {}
         for variable in cols:
             fh, fn = tempfile.mkstemp(suffix=".txt", dir=tempfolder)
-            os.close(fh) #immediately free up file handle for re-use
+            os.close(fh)  # immediately free up file handle for re-use
             fns[variable] = fn
             fn = '"{}"'.format(fn)
             fn = fn.replace(os.sep, "/")
@@ -552,17 +559,17 @@ class NetLogoLink:
                         result = np.array([entry.strip('"') for entry in result.split()])
 
                 results[key] = result
-        
+
         # cleanup temp files and folders
         for key, value in fns.items():
-             os.remove(value) #delete file by name
+            os.remove(value)  # delete file by name
 
-        os.rmdir(tempfolder) #remove folder
+        os.rmdir(tempfolder)  # remove folder
 
         return results
 
-    def write_NetLogo_attriblist(self, agent_data, agent_name):
-        """Update attributes of a set of NetLogo agents from a DataFrame
+    def write_NetLogo_attriblist(self, agent_data: pd.DataFrame, agent_name: str):
+        """Update attributes of a set of NetLogo agents from a DataFrame.
 
         Assumes a set of NetLogo agents of the same type. Attribute values
         can be numerical or strings.
@@ -630,8 +637,9 @@ class NetLogoLink:
             raise NetLogoException(str(ex))
 
     def _cast_results(self, results):
-        """Convert results to the proper python data type. The NLResults
-        object knows its datatype and has converter methods for each.
+        """Convert results to the proper python data type.
+
+        The NLResults object knows its datatype and has converter methods for each.
 
         Parameters
         ----------
